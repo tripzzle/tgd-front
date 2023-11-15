@@ -1,13 +1,10 @@
 <script setup>
-
+import { RouterLink, RouterView } from "vue-router";
 </script>
 
 <template>
-  <div>
-    
-  </div>
+  <RouterLink :to="{ name: 'login' }">login</RouterLink> |
+  <router-view />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
