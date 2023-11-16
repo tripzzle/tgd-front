@@ -3,16 +3,20 @@ import NavBar from "@/components/common/NavBar.vue";
 import CardList from "@/components/schedule/CardList.vue";
 import { useRoute } from "vue-router";
 import ScheduleDetail from "@/components/schedule/ScheduleDetail.vue";
+import UserInfo from "./components/Mypage/UserInfo.vue";
+import LoginView from "./views/LoginView.vue";
 const route = useRoute();
 </script>
 
 <template>
   <div class="hi">
     <NavBar />
-    <RouterView />
+    <router-link :to="{ path: 'login' }">login</router-link>
     <CardList />
     <ScheduleDetail />
+    <UserInfo />
   </div>
+  <router-view />
 </template>
 
 <style scoped>
