@@ -1,6 +1,4 @@
 <script setup>
-import MapView from "@/components/common/MapView.vue";
-import AttractionCardList from "@/components/attraction/AttractionCardList.vue";
 import { ref } from "vue";
 const collapsed = ref(false);
 const selectedKeys = ref(["1"]);
