@@ -1,27 +1,18 @@
 <script setup>
-import NavBar from "@/components/common/NavBar.vue";
-import CardList from "@/components/schedule/CardList.vue";
-import { useRoute } from "vue-router";
-import ScheduleDetail from "@/components/schedule/ScheduleDetail.vue";
-import UserInfo from "./components/Mypage/UserInfo.vue";
-import LoginView from "./views/LoginView.vue";
-const route = useRoute();
+import NavBar from "@/components/common/NavBar.vue"
+import { RouterView } from "vue-router";
 </script>
 
 <template>
   <div class="hi">
-    <NavBar />
-    <router-link :to="{ path: 'login' }">login</router-link>
-    <CardList />
-    <ScheduleDetail />
-    <UserInfo />
+    <NavBar/>
   </div>
-  <router-view />
+  <router-view/>
 </template>
 
 <style scoped>
 .hi {
-  background-color: #fffdfd;
+  background-color: #cb1818;
   margin-top: 70px;
   /* margin: 200px 140px; */
   /* padding: 40px 40px; */
