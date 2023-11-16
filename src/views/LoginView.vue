@@ -10,7 +10,7 @@ onMounted(() => {
 
 <template>
   <div class="center-container">
-    <RouterLink :to="{ name: '/' }">
+    <RouterLink :to="{ name: 'main' }">
       <img src="@/assets/img/TGD-Logo.png" style="width: 300px" alt="" />
     </RouterLink>
 
