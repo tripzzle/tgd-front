@@ -1,7 +1,7 @@
 export const naverService = () => {
     const naverLogin = new window.naver.LoginWithNaverId({
-        clientId: "a0K------------Xfk",
-        callbackUrl: "http://localhost:8080/auth",
+        clientId: "5V7kxxbzkL0QzEFF_8gA",
+        callbackUrl: "https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=jyvqXeaVOVmV&redirect_uri=localhost:8080&state=hLiDdL2uhPtsftcU",
         isPopup: false /* 팝업을 통한 연동처리 여부 */,
         loginButton: {
             color: "green",
@@ -28,4 +28,15 @@ export const naverService = () => {
         setNaver,
         getUserInfo,
     };
+
+};
+
+export const kakoLogin = () => {
+    
+    const loginWithKakao = () => {
+        const params = {
+            redirectUri: "http://localhost:8080/auth",
+        };
+        window.Kakao.Auth.authorize(params);
+    }
 };
