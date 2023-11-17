@@ -6,7 +6,7 @@ import "moment/locale/ko";
 import locale from "ant-design-vue/es/locale/ko_KR";
 import { ConfigProvider } from "ant-design-vue";
 import { RouterLink } from "vue-router";
-moment.locale = "ko";
+moment.locale('ko');  // Change this line
 const openModal = () => {
   console.log(store);
   store.open = true;

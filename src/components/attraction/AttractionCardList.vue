@@ -3,56 +3,59 @@
     <a-row span="6">
       <a-col span="24">
         <div v-for="item in attractions" :key="item.attractionId" align="center">
-          <AttractionDetail :item="item" @addToList="addToList(item)" class="list"/>
+          <AttractionDetail :item="item" @addToList="addToList(item)" @click="openModal(item)" class="list"/>
         </div>
       </a-col>
     </a-row>
-    <AttractionDetailModal v-if="selectedAttraction" :item="selectedAttraction" @close="closeModal"/>
+    <AttractionDetailModal :open="open" :item="selectedAttraction" @close="closeModal"/>
   </div>
 </template>
 
 
 <script setup>
-import {ref, onMounted} from "vue";
+import {ref, onMounted, computed} from "vue";
 import axios from "axios";
 import AttractionDetail from "@/components/attraction/AttractionDetail.vue";
 import AttractionDetailModal from "@/components/attraction/AttractionDetailModal.vue";
 import {useStore} from "@/stores/store.js";
+import API from "@/components/schedule/write/api/api";
 
 const {addToList} = useStore();
 
-const attractions = ref([]);
 const selectedAttraction = ref(null);
 const height = ref(6);
 const width = ref(6);
 const lat = ref(37.543902);
 const lng = ref(127.979745);
-const value = ref('');
-const selectedOption = ref(null);
+const open = ref(false);
 
-onMounted(async () => {
-  const response = await axios.get(
-      `${import.meta.env.VITE_SERVER}/api/attraction/all?latitude=${lat.value}&height=${height.value}&width=${width.value}&longitude=${lng.value}`
-  );
-  attractions.value = response.data;
+const localAttractions = ref([]);
+
+const props = defineProps({
+  attractions: Object
 });
 
-const onSearch = async () => {
-  const response = await axios.get(
-      `${import.meta.env.VITE_SERVER}/api/attraction?keyword=${value.value}&sidoCode=${selectedOption.value}`
-  );
-  attractions.value = response.data;
-  console.log("attraction : " + attractions.value);
-};
+const attractions = computed(() => {
+  return props.attractions ? props.attractions : localAttractions.value;
+});
 
-const showDetail = (item) => {
-  console.log("hhh")
+const openModal = (item) => {
   selectedAttraction.value = item;
-};
+  console.log(item)
+  open.value = true;
+}
 
-const closeDetail = () => {
-  selectedAttraction.value = null;
-};
+const closeModal = () => {
+  console.log("modal 닫음")
+  open.value = false;
+}
+
+onMounted(async () => {
+  console.log("onMounted")
+  const response = await axios.get(API.getAttractionsByLatLng(lat, lng, height, width));
+  localAttractions.value = response.data.data;
+  console.log(localAttractions.value);
+});
 </script>
 
 <style scoped>
