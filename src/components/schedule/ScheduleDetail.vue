@@ -2,6 +2,7 @@
 import { ref } from "vue";
 const collapsed = ref(false);
 const selectedKeys = ref(["1"]);
+import AttractionCardList from "@/components/attraction/AttractionCardList.vue";
 </script>
 
 <template>
