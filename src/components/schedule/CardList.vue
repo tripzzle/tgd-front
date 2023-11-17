@@ -24,9 +24,20 @@ let size = ref(10);
 
 onMounted(async () => {
   // 컴포넌트가 마운트될 때 서버로부터 데이터를 가져옴
+  console.log(
+    `${import.meta.env.VITE_SERVER}/api/schedule?keyword=${
+      keyword.value
+    }&page=${page.value}&size=${size.value}`
+  );
   const response = await axios.get(
+<<<<<<< HEAD
+    `${import.meta.env.VITE_SERVER}/api/schedule?keyword=${
+      keyword.value
+    }&page=${page.value}&size=${size.value}`
+=======
     `${import.meta.env.SERVER}
     /api/schedule?keyword=${keyword.value}&page=${page.value}&size=${size.value}`
+>>>>>>> a9f4aa6fea15b8457daa4da437b76675697b96a6
   );
   items.value = response.data; // API로부터 받아온 데이터를 items 배열에 저장
 });

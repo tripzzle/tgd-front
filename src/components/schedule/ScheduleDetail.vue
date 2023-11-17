@@ -11,8 +11,9 @@ const selectedKeys = ref(["1"]);
       <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
         <a-menu-item key="1">
           <pie-chart-outlined />
-          <span><AttractionCardList /></span>
+          <span></span>
         </a-menu-item>
+        <AttractionCardList />
       </a-menu>
     </a-layout>
 
