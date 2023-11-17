@@ -17,6 +17,9 @@ import UserWishList from "@/components/Mypage/UserWishList.vue";
 <style scoped>
 .mypage {
   height: 1000px;
+  display: flex;
+  align-items: stretch;
+  padding-top: 80px;
 }
 
 .info {
