@@ -1,19 +1,19 @@
 <template>
-  <div class="flip-card">
+  <div class="flip-card" @click="goToSchedule">
     <div class="flip-card-inner">
       <div class="flip-card-front">
         <a-card hoverable style="width: 200px">
           <template #cover>
-            <img alt="example" :src="item.imgUrl" />
+            <img alt="example" :src="item.imgUrl"/>
           </template>
           <template #actions>
-            <setting-outlined key="setting" />
-            <edit-outlined key="edit" />
-            <ellipsis-outlined key="ellipsis" />
+            <setting-outlined key="setting"/>
+            <edit-outlined key="edit"/>
+            <ellipsis-outlined key="ellipsis"/>
           </template>
           <a-card-meta :title="item.title" :description="item.content">
             <template #avatar>
-              <a-avatar :src="item.imgUrl" />
+              <a-avatar :src="item.imgUrl"/>
               <!-- imgUrl이 없을 경우 기본 이미지 URL 사용 -->
             </template>
           </a-card-meta>
@@ -32,9 +32,8 @@
 </template>
 
 <script setup>
-import { defineProps, ref } from "vue";
-
-const defaultImg = ref("@/components/icons/tdg.png");
+import {defineProps} from "vue";
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   item: {
@@ -42,6 +41,12 @@ const props = defineProps({
     required: true,
   },
 });
+
+const router = useRouter();
+
+function goToSchedule() {
+  router.push({name: 'scheduleDetail', params: {id: props.item.scheduleId}});
+}
 
 console.log(props);
 </script>

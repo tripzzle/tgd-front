@@ -1,13 +1,12 @@
 <script setup>
-import {store} from "@/stores/store.js";
+import { store } from "@/stores/store.js";
 import DatePicker from "@/components/common/DatePicker.vue";
 import moment from "moment";
 import "moment/locale/ko";
 import locale from "ant-design-vue/es/locale/ko_KR";
-import {ConfigProvider} from "ant-design-vue";
-import {RouterLink} from "vue-router";
-
-moment.locale = "ko";
+import { ConfigProvider } from "ant-design-vue";
+import { RouterLink } from "vue-router";
+moment.locale('ko');  // Change this line
 const openModal = () => {
   console.log(store);
   store.open = true;
@@ -43,8 +42,7 @@ const openModal = () => {
 </template>
 <style lang="scss" scoped>
 .custom-menu-item {
-  width: auto;
-  margin: 0 !important;
+  width: auto !important;
 }
 
 .custom-button {
