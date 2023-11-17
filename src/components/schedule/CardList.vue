@@ -1,6 +1,6 @@
 <template>
   <a-row :gutter="[30, 80]">
-    <Card v-for="item in items" :key="index" :item="item" />
+    <Card v-for="(item, index) in items" :key="index" :item="item" />
   </a-row>
 </template>
 
@@ -30,9 +30,14 @@ onMounted(async () => {
     }&page=${page.value}&size=${size.value}`
   );
   const response = await axios.get(
+<<<<<<< HEAD
     `${import.meta.env.VITE_SERVER}/api/schedule?keyword=${
       keyword.value
     }&page=${page.value}&size=${size.value}`
+=======
+    `${import.meta.env.SERVER}
+    /api/schedule?keyword=${keyword.value}&page=${page.value}&size=${size.value}`
+>>>>>>> a9f4aa6fea15b8457daa4da437b76675697b96a6
   );
   items.value = response.data; // API로부터 받아온 데이터를 items 배열에 저장
 });
