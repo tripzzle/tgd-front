@@ -3,15 +3,8 @@
     <img :src="item.imgUrl" alt="image"/>
     <div class="card-content">
       <h3>{{ item.title }}</h3>
-      <h6>{{ item.address }}</h6>
       <div class="button-box">
-        <button class="icon-button heart">
-          <i class="fas fa-heart"></i> <span>10000</span>
-        </button>
-        <button class="icon-button star">
-          <i class="fas fa-star"></i> <span>10000</span>
-        </button>
-        <button @click="$emit('addToList')">+</button>
+        <button @click="$emit('deleteToList', item)">x</button>
       </div>
     </div>
   </div>
@@ -25,7 +18,7 @@ const props = defineProps(["item"]);
 
 <style scoped>
 .card {
-  width: 80%;
+  width: 100%;
   padding: 10px;
   background-color: #fffdfd;
   border: 5px solid #a385cf;
