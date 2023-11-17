@@ -22,14 +22,27 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { store } from "@/stores/store.js";
+import {ref} from "vue";
+import {store} from "@/stores/store.js";
+import { useRouter } from 'vue-router';
+
 const value1 = ref([]);
 
 // OK 버튼 누르면 모달 꺼짐
 // 일정 생성 페이지로 연결하기
+const router = useRouter();
+
 const handleOk = (e) => {
-  console.log(e);
+  if (value1.value && value1.value.length === 2) {
+    const startDate = value1.value[0].format('YYYY-MM-DD');
+    const endDate = value1.value[1].format('YYYY-MM-DD');
+
+    router.push({
+      name: 'schedule',
+      query: { startDate, endDate }
+    });
+  }
+
   store.open = false;
 };
 
@@ -48,8 +61,4 @@ const handleChange = (dates) => {
 </script>
 
 <style scoped>
-.centered-title .ant-modal-title,
-.centered-content .ant-modal-body {
-  text-align: center;
-}
 </style>

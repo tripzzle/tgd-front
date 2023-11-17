@@ -7,7 +7,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import Card from "@/components/schedule/Card.vue";
+import Card from "@/components/schedule/main/ScheduleCard.vue";
 
 // components 정의
 const components = {

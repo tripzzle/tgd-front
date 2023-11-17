@@ -28,8 +28,8 @@ h3 {
 }
 .profil {
   margin-right: 80px;
+  border: 2px solid black; /* Add border */
 }
-
 .profile-details {
   display: flex;
   flex-direction: column;
