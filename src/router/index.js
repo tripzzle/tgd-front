@@ -9,6 +9,12 @@ import { createRouter, createWebHistory } from 'vue-router'
       component: () => import('@/views/MainView.vue'),
 
     },
+      {
+          path: '/login/oauth2/code/:where',
+          name: 'oauth2',
+          component: () => import('@/views/OAuth2View.vue'),
+
+      },
     {
       path: '/login',
       name: 'login',
