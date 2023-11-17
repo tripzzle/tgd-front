@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import AttractionCardList from "../attraction/AttractionCardList.vue";
 const collapsed = ref(false);
 const selectedKeys = ref(["1"]);
 </script>
