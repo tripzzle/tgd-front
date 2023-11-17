@@ -5,8 +5,8 @@ import ScheduleDetail from "@/components/schedule/ScheduleDetail.vue";
 
 <template>
   <div class="hi">
-        <CardList />
-        <ScheduleDetail />
+    <CardList />
+    <ScheduleDetail />
   </div>
 </template>
 
