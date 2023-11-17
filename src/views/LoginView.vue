@@ -1,32 +1,27 @@
 <script setup>
-import { onMounted } from "vue";
-import { naverService } from "@/assets/js/login.js";
-import { kakoLogin } from "@/assets/js/login.js";
-import { RouterLink, RouterView } from "vue-router";
-onMounted(() => {
-  naverService().setNaver();
-});
+import {kakoLogin, naverLogin} from "@/assets/js/login.js";
+import {RouterLink} from "vue-router";
 </script>
 
 <template>
   <div class="center-container">
     <RouterLink :to="{ name: 'main' }">
-      <img src="@/assets/img/TGD-Logo.png" style="width: 300px" alt="" />
+      <img src="@/assets/img/TGD-Logo.png" style="width: 300px" alt=""/>
     </RouterLink>
 
     <a-row class="login-container" justify="center" align="middle">
       <a-col align="center" :span="24">
         <img
-          class="login-button-img"
-          src="@/assets/img/login/kakao_login_medium_wide.png"
-          @click="kakoLogin.kakoLogin"
+            class="login-button-img"
+            src="@/assets/img/login/kakao_login_medium_wide.png"
+            @click="kakoLogin.kakoLogin"
         />
       </a-col>
       <a-col align="center" :span="24">
-        <div id="naverIdLogin"></div>
+        <img src="@/assets/img/login/btnG_완성형.png" style="width: 200px; height: 45px;" @click="naverLogin">
       </a-col>
       <a-col align="center" :span="24">
-        <img style="width: 190px; height: 40px" src="@/assets/img/login/web_light_sq_SU@3x.png" />
+        <img style="width: 190px; height: 40px" src="@/assets/img/login/web_light_sq_SU@3x.png"/>
       </a-col>
     </a-row>
   </div>
