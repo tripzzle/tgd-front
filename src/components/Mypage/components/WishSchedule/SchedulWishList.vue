@@ -1,5 +1,5 @@
 <script setup>
-import Card from "@/components/schedule/Card.vue"
+import ScheduleCard from "@/components/schedule/main/ScheduleCard.vue";
 import {ref} from "vue";
 
 const wishListS = ref([
@@ -39,7 +39,7 @@ const wishListS = ref([
 
 <template>
   <a-row>
-    <Card v-for="(item, index) in wishListS" :key="index" :item="item" />
+    <ScheduleCard v-for="(item, index) in wishListS" :key="index" :item="item" />
   </a-row>
 </template>
 

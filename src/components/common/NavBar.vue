@@ -25,7 +25,7 @@ const openModal = () => {
         <router-link :to="{ name: 'login' }">
           <a-button class="custom-button">로그인</a-button>
         </router-link>
-        <router-link :to="{ name: 'mypage' }">
+        <router-link :to="{ name: '' }">
           <a-button class="custom-button">로그아웃</a-button>
         </router-link>
         |
