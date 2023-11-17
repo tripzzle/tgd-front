@@ -45,7 +45,7 @@ const props = defineProps({
 const router = useRouter();
 
 function goToSchedule() {
-  router.push({name: 'schedule', params: {id: props.item.scheduleId}});
+  router.push({name: 'scheduleDetail', params: {id: props.item.scheduleId}});
 }
 
 console.log(props);
