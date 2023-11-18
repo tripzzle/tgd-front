@@ -12,7 +12,7 @@
         </a-col>
         <SidoOption @update="onUpdateOption"/>
       </a-row>
-      <AttractionCardList :attractions="searchResult"/>
+      <AttractionCardList :attractions="searchResult" @add-to-list="addToList"/>
     </a-menu>
   </a-layout>
 
@@ -30,7 +30,12 @@ const keyword = ref('');
 const sidoCode = ref(null);
 const searchResult = ref(null);
 const page = ref(null);
-const emit = defineEmits(["goBack"]);
+const emit = defineEmits(["goBack", "addToList"]);
+
+const addToList = (item) =>{
+  console.log("addToList in AttractionView", item);
+  emit('addToList', item);
+}
 
 const goBack = () => {
   emit("goBack");

@@ -11,7 +11,7 @@
         <button class="icon-button star">
           <i class="fas fa-star"></i> <span>10000</span>
         </button>
-        <button @click="$emit('addToList')">+</button>
+        <button @click="handleClick($event, item)">+</button>
       </div>
     </div>
   </div>
@@ -20,7 +20,17 @@
 <script setup>
 import {defineProps} from "vue";
 
+// 상위 컴포넌트에서 아이템 받아옴
 const props = defineProps(["item"]);
+
+// 리스트에 추가하는 이벤트 전파
+const emit = defineEmits(['addToList']);
+const handleClick = (event, item) =>{
+  event.stopPropagation();
+  console.log("addToList in AttractionDetail");
+  emit('addToList', item);
+}
+
 </script>
 
 <style scoped lang="scss">

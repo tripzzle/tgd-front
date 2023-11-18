@@ -12,7 +12,7 @@
       </transition>
       <button class="carousel-button next" @click="nextSlide">></button>
     </div>
-    <a-button @click="addAttraction">장소 추가</a-button>
+    <a-button @click="moveAttractionView">장소 추가</a-button>
     <transition :name="slideDirection" mode="out-in">
       <div :key="currentSlide">
         <div v-if="props.days.length > 0">
@@ -43,10 +43,10 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(["addAttraction"]);
-
-const addAttraction = () => {
-  emit("addAttraction");
+// day 일자에 추가하기 위해 이벤트 등록
+const emit = defineEmits(["moveAttractionView"]);
+const moveAttractionView = () => {
+  emit("moveAttractionView", currentSlide.value);
 };
 
 // props 사용
@@ -66,6 +66,7 @@ const nextSlide = () => {
   console.log(props.days[currentSlide.value])
 };
 
+// 이전 버튼을 누르면 날짜 맨 뒤로 이동
 const prevSlide = () => {
   if (currentSlide.value <= 0) {
     currentSlide.value = props.days.length - 1;
