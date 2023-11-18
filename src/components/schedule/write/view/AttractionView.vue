@@ -1,5 +1,5 @@
 <template>
-  <a-layout v-model:collapsed="collapsed" collapsible style="width: 70vw">
+  <a-layout v-model:collapsed="collapsed" collapsible style="width: 40%">
     <a-menu v-model:selectedKeys="selectedKeys" theme="light" mode="inline" class="ant-menu-item">
       <a-row direction="vertical" justify="center">
         <a-col span="16">
@@ -61,4 +61,11 @@ a-input-search {
   width: 80%;
   box-sizing: border-box;
 }
+
+.ant-menu-item{
+  overflow-y: auto;
+  max-height: 700px /* 원하는 높이로 설정하세요 */
+}
+
+
 </style>

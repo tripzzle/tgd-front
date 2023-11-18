@@ -1,4 +1,4 @@
-const server = import.meta.env.VITE_LOCAL_SERVER;
+const server = import.meta.env.VITE_SERVER;
 
 export default {
     getAttractionsByTitle: (title, sidoCode) => {
