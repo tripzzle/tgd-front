@@ -1,5 +1,6 @@
 <template>
   <a-layout v-model:collapsed="collapsed" collapsible style="width: 40%">
+    <a-button @click="goBack">뒤로 가기</a-button>
     <a-menu v-model:selectedKeys="selectedKeys" theme="light" mode="inline" class="ant-menu-item">
       <a-row direction="vertical" justify="center">
         <a-col span="16">
@@ -29,7 +30,11 @@ const keyword = ref('');
 const sidoCode = ref(null);
 const searchResult = ref(null);
 const page = ref(null);
+const emit = defineEmits(["goBack"]);
 
+const goBack = () => {
+  emit("goBack");
+};
 const onSearch = () => {
   if (sidoCode.value == null) {
     alert("지역을 선택해주세요");
@@ -62,7 +67,7 @@ a-input-search {
   box-sizing: border-box;
 }
 
-.ant-menu-item{
+.ant-menu-item {
   overflow-y: auto;
   max-height: 700px /* 원하는 높이로 설정하세요 */
 }

@@ -6,16 +6,23 @@
         <div class="slides" :key="currentSlide">
           <div v-for="(item, index) in days" :key="index" v-show="currentSlide === index">
             <a-tag color="purple">Day{{ index + 1 }}</a-tag>
-            {{ item.getFullYear() }}.{{ item.getMonth() }}.{{ item.getDate() }}
+            {{ item.date.getFullYear() }}.{{ item.date.getMonth() }}.{{ item.date.getDate() }}
           </div>
         </div>
       </transition>
       <button class="carousel-button next" @click="nextSlide">></button>
     </div>
-    <div v-for="item in dayAttractions.value" @deleteToList="deleteToList(item)" :key="item.attractionId"
-         style="padding: 10px">
-      <DayAttractionDetail :item="item"/>
-    </div>
+    <a-button @click="addAttraction">장소 추가</a-button>
+    <transition :name="slideDirection" mode="out-in">
+      <div :key="currentSlide">
+        <div v-if="props.days.length > 0">
+          <div v-for="attraction in props.days[currentSlide].attractions" :key="attraction.attractionId"
+               @deleteToList="deleteToList(attraction)" style="padding: 10px">
+            <DayAttractionDetail :item="attraction"/>
+          </div>
+        </div>
+      </div>
+    </transition>
   </a-layout>
 </template>
 <script setup>
@@ -26,6 +33,9 @@ import DayAttractionDetail from "@/components/attraction/DayAttractionDetail.vue
 const {deleteToList} = useStore();
 const collapsed = ref(false);
 const dayAttractions = reactive([]);
+let currentSlide = ref(0);
+let slideDirection = ref('forward');
+
 const props = defineProps({
   days: {
     type: Array,
@@ -33,13 +43,16 @@ const props = defineProps({
   }
 });
 
+const emit = defineEmits(["addAttraction"]);
+
+const addAttraction = () => {
+  emit("addAttraction");
+};
+
 // props 사용
 watch(() => props.days, (newVal, oldVal) => {
   console.log("new value: ", newVal, "old value: ", oldVal);
 });
-
-let currentSlide = ref(0);
-let slideDirection = ref('forward');
 
 const nextSlide = () => {
   if (currentSlide.value >= props.days.length - 1) {
@@ -48,6 +61,9 @@ const nextSlide = () => {
     currentSlide.value++;
   }
   slideDirection.value = 'forward';
+  dayAttractions.value = props.days[currentSlide.value].attractions;
+  console.log("next slide: ", currentSlide.value);
+  console.log(props.days[currentSlide.value])
 };
 
 const prevSlide = () => {
@@ -57,6 +73,8 @@ const prevSlide = () => {
     currentSlide.value--;
   }
   slideDirection.value = 'backward';
+  dayAttractions.value = props.days[currentSlide.value].attractions;
+  console.log("prev slide: ", currentSlide.value);
 };
 </script>
 

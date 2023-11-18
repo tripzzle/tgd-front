@@ -1,7 +1,7 @@
 <template>
   <a-flex class="space" gap="large">
-<!--    <AttractionView/>-->
-    <DayAttractionView :days="days"/>
+    <AttractionView v-if="showAttractionView" @goBack="showAttractionView = false"/>
+    <DayAttractionView v-if="!showAttractionView" :days="days" @addAttraction="showAttractionView = true"/>
     <MapView/>
   </a-flex>
 </template>
@@ -19,6 +19,13 @@ const startDate = ref('');
 const endDate = ref('');
 const {getDayAttractions} = useStore();
 const dayAttractions = reactive([]);
+let days = ref();
+
+const dummyAttractions = [
+  {attractionId: 1, title: "title", imgUrl: "http://tong.visitkorea.or.kr/cms/resource/21/2657021_image2_1.jpg"},
+  {attractionId: 2, title: "title", imgUrl: "http://tong.visitkorea.or.kr/cms/resource/21/2657021_image2_1.jpg"},
+];
+let showAttractionView = ref(false);
 
 const generateDays = (start, end) => {
   const startDate = new Date(start);
@@ -30,7 +37,7 @@ const generateDays = (start, end) => {
     days.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  return days;
+  return days.map(day => ({date: day, attractions: dummyAttractions}));
 };
 
 let days = ref();
