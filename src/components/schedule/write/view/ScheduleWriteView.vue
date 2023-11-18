@@ -55,13 +55,12 @@ const generateDays = (start, end) => {
   return days.map(day => ({date: day, attractions: [...dayAttractions]}));
 };
 
-let days = ref();
 const updateDatesFromQuery = () => {
   startDate.value = route.query.startDate;
   endDate.value = route.query.endDate;
   console.log(startDate.value, endDate.value);
   days.value = generateDays(startDate.value, endDate.value);
-  console.log(days)
+  console.log(days.value);
 };
 
 watch(getDayAttractions.value, (value1) => {

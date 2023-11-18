@@ -14,7 +14,7 @@
     </div>
     <a-button @click="moveAttractionView">장소 추가</a-button>
     <transition :name="slideDirection" mode="out-in">
-      <div :key="currentSlide">
+      <div :key="currentSlide" class="items">
         <div v-if="props.days.length > 0">
           <div v-for="attraction in props.days[currentSlide].attractions" :key="attraction.attractionId"
                @deleteToList="deleteToList(attraction)" style="padding: 10px">
@@ -137,5 +137,10 @@ const prevSlide = () => {
 
 .forward-enter-to, .forward-leave-from, .backward-enter-to, .backward-leave-from {
   transform: translateX(0);
+}
+
+.items{
+  overflow-y: auto;
+  max-height: 500px /* 원하는 높이로 설정하세요 */
 }
 </style>
