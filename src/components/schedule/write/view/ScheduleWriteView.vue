@@ -1,9 +1,11 @@
 <template>
-  <a-layout>
-    <AttractionView/>
-    <DayAttractionView/>
+  <a-flex class="space" gap="large">
+    <AttractionView v-if="showAttractionView" @goBack="showAttractionView = false"
+                    @add-to-list="handleAddAttraction"/>
+    <DayAttractionView v-if="!showAttractionView" :days="days" @moveAttractionView="handleMoveAttractionView"
+                       @removeAttraction="handleRemoveAttraction"/>
     <MapView/>
-  </a-layout>
+  </a-flex>
 </template>
 
 <script setup>
@@ -19,11 +21,47 @@ const startDate = ref('');
 const endDate = ref('');
 const {getDayAttractions} = useStore();
 const dayAttractions = reactive([]);
+let days = ref();
+let showAttractionView = ref(false);
+const currentSlide = ref(0);
 
+const handleRemoveAttraction = (attraction) => {
+  console.log("remove in ScheduleWriteView", attraction);
+}
+
+const handleAddAttraction = (attraction) => {
+  console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value , days.value[currentSlide.value]);
+  days.value[currentSlide.value].attractions.push(attraction);
+  console.log(days.value)
+}
+
+const handleMoveAttractionView = (val) => {
+  // currentSlide 값을 사용하여 작업을 수행합니다.
+  console.log(val);
+  currentSlide.value = val;
+  showAttractionView.value = true;
+};
+
+const generateDays = (start, end) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  let currentDate = startDate;
+  const days = [];
+
+  while (currentDate <= endDate) {
+    days.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return days.map(day => ({date: day, attractions: [...dayAttractions]}));
+};
+
+let days = ref();
 const updateDatesFromQuery = () => {
   startDate.value = route.query.startDate;
   endDate.value = route.query.endDate;
   console.log(startDate.value, endDate.value);
+  days.value = generateDays(startDate.value, endDate.value);
+  console.log(days)
 };
 
 watch(getDayAttractions.value, (value1) => {
@@ -36,4 +74,7 @@ onMounted(updateDatesFromQuery);
 </script>
 
 <style scoped>
+.space {
+  margin: 60px 20px;
+}
 </style>
