@@ -1,7 +1,9 @@
 <template>
   <a-flex class="space" gap="large">
-    <AttractionView v-if="showAttractionView" @goBack="showAttractionView = false"/>
-    <DayAttractionView v-if="!showAttractionView" :days="days" @addAttraction="showAttractionView = true"/>
+    <AttractionView v-if="showAttractionView" @goBack="showAttractionView = false"
+                    @add-to-list="handleAddAttraction"/>
+    <DayAttractionView v-if="!showAttractionView" :days="days" @moveAttractionView="handleMoveAttractionView"
+                       @removeAttraction="handleRemoveAttraction"/>
     <MapView/>
   </a-flex>
 </template>
@@ -20,12 +22,25 @@ const endDate = ref('');
 const {getDayAttractions} = useStore();
 const dayAttractions = reactive([]);
 let days = ref();
-
-const dummyAttractions = [
-  {attractionId: 1, title: "title", imgUrl: "http://tong.visitkorea.or.kr/cms/resource/21/2657021_image2_1.jpg"},
-  {attractionId: 2, title: "title", imgUrl: "http://tong.visitkorea.or.kr/cms/resource/21/2657021_image2_1.jpg"},
-];
 let showAttractionView = ref(false);
+const currentSlide = ref(0);
+
+const handleRemoveAttraction = (attraction) => {
+  console.log("remove in ScheduleWriteView", attraction);
+}
+
+const handleAddAttraction = (attraction) => {
+  console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value , days.value[currentSlide.value]);
+  days.value[currentSlide.value].attractions.push(attraction);
+  console.log(days.value)
+}
+
+const handleMoveAttractionView = (val) => {
+  // currentSlide 값을 사용하여 작업을 수행합니다.
+  console.log(val);
+  currentSlide.value = val;
+  showAttractionView.value = true;
+};
 
 const generateDays = (start, end) => {
   const startDate = new Date(start);
@@ -37,7 +52,7 @@ const generateDays = (start, end) => {
     days.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  return days.map(day => ({date: day, attractions: dummyAttractions}));
+  return days.map(day => ({date: day, attractions: [...dayAttractions]}));
 };
 
 let days = ref();
