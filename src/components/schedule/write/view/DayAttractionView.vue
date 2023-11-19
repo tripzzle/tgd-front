@@ -34,12 +34,26 @@ const dayAttractions = reactive([]);
 let currentSlide = ref(0);
 let slideDirection = ref('forward');
 
+
+
 const props = defineProps({
   days: {
     type: Array,
     default: () => []
   },
+
+  slide : {
+    type: Number,
+  }
 });
+
+watch (
+    () => props.slide,
+    () => {
+      currentSlide.value = props.slide
+    },
+    { immediate: true}
+)
 
 const deleteToList = (attraction, index) =>{
   console.log("DayAttractionView's deleteToList",attraction);

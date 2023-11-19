@@ -2,7 +2,8 @@
   <a-flex class="space" gap="large">
     <AttractionView v-if="showAttractionView" @goBack="handleMoveDayAttractionView"
                     @add-to-list="handleAddAttraction"/>
-    <DayAttractionView v-if="!showAttractionView" :days="days" @moveAttractionView="handleMoveAttractionView"
+    <DayAttractionView v-if="!showAttractionView" :slide="currentSlide" :days="days"
+                       @moveAttractionView="handleMoveAttractionView"
                        @removeAttraction="handleRemoveAttraction" @delete-to-list="handleRemoveAttraction"/>
     <MapView/>
   </a-flex>
@@ -43,10 +44,9 @@ const handleMoveAttractionView = (val) => {
   showAttractionView.value = true;
 };
 
-const handleMoveDayAttractionView = (val) => {
+const handleMoveDayAttractionView = () => {
   // currentSlide 값을 사용하여 작업을 수행합니다.
-  console.log(val);
-  currentSlide.value = val;
+  console.log(days.value);
   showAttractionView.value = false;
 };
 
