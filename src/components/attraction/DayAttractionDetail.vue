@@ -4,7 +4,7 @@
     <div class="card-content">
       <h3>{{ item.title }}</h3>
       <div class="button-box">
-        <button @click="$emit('deleteToList', item)">x</button>
+        <button @click="deleteToList">x</button>
       </div>
     </div>
   </div>
@@ -14,6 +14,15 @@
 import {defineProps} from "vue";
 
 const props = defineProps(["item"]);
+
+// 삭제 버튼 누르는 경우 상위 컴포넌트로 전파되는 이벤트 생성
+const emit = defineEmits(["deleteToList"]);
+const deleteToList = () => {
+  console.log("DayAttractionDetail's deleteToList", props.item)
+  emit("deleteToList", props.item);
+}
+
+
 </script>
 
 <style scoped>

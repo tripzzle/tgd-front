@@ -3,7 +3,7 @@
     <AttractionView v-if="showAttractionView" @goBack="showAttractionView = false"
                     @add-to-list="handleAddAttraction"/>
     <DayAttractionView v-if="!showAttractionView" :days="days" @moveAttractionView="handleMoveAttractionView"
-                       @removeAttraction="handleRemoveAttraction"/>
+                       @removeAttraction="handleRemoveAttraction" @delete-to-list="handleRemoveAttraction"/>
     <MapView/>
   </a-flex>
 </template>
@@ -25,8 +25,11 @@ let days = ref();
 let showAttractionView = ref(false);
 const currentSlide = ref(0);
 
-const handleRemoveAttraction = (attraction) => {
-  console.log("remove in ScheduleWriteView", attraction);
+// 관광지를 삭제하는 메서드, 현재 일자에 해당하는 동일한 관광지를 지워준다.
+const handleRemoveAttraction = (attraction, currentSlide, index) => {
+  console.log("remove in ScheduleWriteView", attraction, currentSlide,
+      days.value[currentSlide], index);
+  days.value[currentSlide].attractions.splice(index, 1);
 }
 
 const handleAddAttraction = (attraction) => {
