@@ -10,7 +10,6 @@
 
 <script setup>
 import {onMounted, reactive, ref, watch} from "vue";
-import {useStore} from "@/stores/store.js";
 import {useRoute} from 'vue-router';
 import MapView from "@/components/schedule/write/view/MapView.vue";
 import DayAttractionView from "@/components/schedule/write/view/DayAttractionView.vue";
@@ -19,7 +18,6 @@ import AttractionView from "@/components/schedule/write/view/AttractionView.vue"
 const route = useRoute();
 const startDate = ref('');
 const endDate = ref('');
-const {getDayAttractions} = useStore();
 const dayAttractions = reactive([]);
 let days = ref();
 let showAttractionView = ref(false);
