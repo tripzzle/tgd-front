@@ -1,6 +1,6 @@
 <template>
   <a-flex class="space" gap="large">
-    <AttractionView v-if="showAttractionView" @goBack="showAttractionView = false"
+    <AttractionView v-if="showAttractionView" @goBack="handleMoveDayAttractionView"
                     @add-to-list="handleAddAttraction"/>
     <DayAttractionView v-if="!showAttractionView" :days="days" @moveAttractionView="handleMoveAttractionView"
                        @removeAttraction="handleRemoveAttraction" @delete-to-list="handleRemoveAttraction"/>
@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref, watch} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {useRoute} from 'vue-router';
 import MapView from "@/components/schedule/write/view/MapView.vue";
 import DayAttractionView from "@/components/schedule/write/view/DayAttractionView.vue";
@@ -31,7 +31,7 @@ const handleRemoveAttraction = (attraction, currentSlide, index) => {
 }
 
 const handleAddAttraction = (attraction) => {
-  console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value , days.value[currentSlide.value]);
+  console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value, days.value[currentSlide.value]);
   days.value[currentSlide.value].attractions.push(attraction);
   console.log(days.value)
 }
@@ -41,6 +41,13 @@ const handleMoveAttractionView = (val) => {
   console.log(val);
   currentSlide.value = val;
   showAttractionView.value = true;
+};
+
+const handleMoveDayAttractionView = (val) => {
+  // currentSlide 값을 사용하여 작업을 수행합니다.
+  console.log(val);
+  currentSlide.value = val;
+  showAttractionView.value = false;
 };
 
 const generateDays = (start, end) => {
@@ -63,12 +70,6 @@ const updateDatesFromQuery = () => {
   days.value = generateDays(startDate.value, endDate.value);
   console.log(days.value);
 };
-
-watch(getDayAttractions.value, (value1) => {
-  dayAttractions.value = value1;
-});
-
-console.log("test" + getDayAttractions.value);
 
 onMounted(updateDatesFromQuery);
 </script>

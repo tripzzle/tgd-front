@@ -38,7 +38,7 @@ const props = defineProps({
   days: {
     type: Array,
     default: () => []
-  }
+  },
 });
 
 const deleteToList = (attraction, index) =>{
