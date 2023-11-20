@@ -6,12 +6,26 @@ import "moment/locale/ko";
 import locale from "ant-design-vue/es/locale/ko_KR";
 import { ConfigProvider } from "ant-design-vue";
 import { RouterLink } from "vue-router";
+import {onMounted, ref} from "vue";
 moment.locale('ko');  // Change this line
 const openModal = () => {
   console.log(store);
   store.open = true;
   console.log("openModal");
 };
+
+
+
+const isLoggedIn = ref(false); // 로그인 여부를 저장하는 변수
+const logout = () => {
+  document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  isLoggedIn.value = false
+};
+
+onMounted(() => {
+  // Authorization 쿠키 유무에 따라 로그인 여부 설정
+  isLoggedIn.value = document.cookie.includes("Authorization");
+});
 </script>
 <template>
   <a-layout id="components-layout">
@@ -22,16 +36,18 @@ const openModal = () => {
         </router-link>
       </div>
       <div class="nav-right">
-        <router-link :to="{ name: 'login' }">
-          <a-button class="custom-button">로그인</a-button>
-        </router-link>
-        <router-link :to="{ name: '' }">
-          <a-button class="custom-button">로그아웃</a-button>
-        </router-link>
-        |
-        <router-link :to="{ name: 'mypage' }">
-          <a-button class="custom-button">마이페이지</a-button>
-        </router-link>
+        <div v-if="isLoggedIn">
+          <a-button class="custom-button" @click="logout">로그아웃</a-button>
+          |
+          <router-link :to="{ name: 'mypage' }">
+            <a-button class="custom-button">마이페이지</a-button>
+          </router-link>
+        </div>
+        <div v-else>
+          <router-link :to="{ name: 'login' }">
+            <a-button class="custom-button">로그인</a-button>
+          </router-link>
+        </div>
         <a-button class="custom-button write-button" @click="openModal" type="primary"> 글쓰기</a-button>
         <ConfigProvider :locale="locale">
           <DatePicker/>

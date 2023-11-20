@@ -1,69 +1,72 @@
 <script setup>
-import {kakoLogin} from "@/assets/js/login.js";
-import {RouterLink} from "vue-router";
+import {RouterLink, useRouter} from "vue-router";
+import {onMounted} from 'vue';
 import axios from "axios";
-// import { localAxios } from "@/util/http-commons";
-import {ref} from "vue";
-const {VITE_SERVER} = import.meta.env;
 
-async function localAxios() {
-  const instance = await axios.create({
-    baseURL: 'http://localhost:8080',
-    mode: 'no-cors',
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/json',
-    },
-    withCredentials: true,
-    credentials: 'same-origin',
-  });
-  // Request 발생 시 적용할 내용.
-  instance.defaults.headers.common["Authorization"] = "";
-  instance.defaults.headers.post["Content-Type"] = "application/json";
-  instance.defaults.headers.put["Content-Type"] = "application/json";
+const router = useRouter();
+// 쿠키 확인 함수
+const getCookie = (key) => {
+//쿠키는 한번에 모두 불러와지기 때문에 사용할때 ';'나눠서 선택적으로 가져와야한다.
+  const cookies = document.cookie.split(`; `).map((el) => el.split('='));
+  let getItem = [];
 
-  return instance;
-}
-
-const local = localAxios();
-
-async function login(success, fail) {
-   (await local).get(`oauth2/authorization/naver`).then(success).catch(fail);
-}
-
-const NaverLogin = async () => {
-  await login(
-      (response) => {
-        if (response.status === httpStatusCode.CREATE) {
-          let { data } = response;
-          let accessToken = data["access-token"];
-          let refreshToken = data["refresh-token"];
-          isLogin.value = true;
-          isLoginError.value = false;
-          isValidToken.value = true;
-          sessionStorage.setItem("accessToken", accessToken);
-          sessionStorage.setItem("refreshToken", refreshToken);
-        } else {
-          isLogin.value = false;
-          isLoginError.value = true;
-          isValidToken.value = false;
-        }
-      },
-      (error) => {
-        console.error(error);
-      }
-  );
-};
-async function KakaoLogin() {
-  try {
-    const response = await axios.get(
-        `${VITE_SERVER}/oauth2/authorization/kakao`
-    );
-    console.log(response);
-  } catch (error) {
-    console.log(error);
+  for (let i = 0; i < cookies.length; i++) {
+    if (cookies[i][0] === key) {
+      getItem.push(cookies[i][1]);
+      break;
+    }
   }
-}
+
+  if (getItem.length > 0) {
+    return getItem[0];
+  }
+};
+
+function parseJwt(token) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+};
+
+
+ onMounted(async() => {
+  // 페이지에 접근했을 때 쿠키 확인
+  let token = getCookie("Authorization");
+  if (token) {
+    // 토큰이 있으면 로그인 처리
+    var decoded = parseJwt(token);
+
+    if (decoded.roles && decoded.roles.length === 1) {
+      await axios.get(`http://localhost:8080/api/user/signup?userId=${decoded.sub}`, {
+        headers: {
+          'X-AUTH-TOKEN': token
+        }
+      })
+          .then(function (response) {
+            console.log(response.data)
+            router.push({
+              name: 'signup',
+              query: {
+                userInfo:  JSON.stringify(response.data)
+              }
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+    } else if (decoded.roles && decoded.roles[1] === 'USER') {
+      router.push({name: 'main'});
+    }
+  } else {
+    // 토큰이 없으면 비로그인 처리
+    console.log("Token not found");
+  }
+});
 </script>
 
 <template>
@@ -78,15 +81,13 @@ async function KakaoLogin() {
           <img
               class="login-button-img"
               src="@/assets/img/login/kakao_login_medium_wide.png"
-              @click="kakoLogin.kakoLogin"
           />
         </a>
       </a-col>
       <a-col align="center" :span="24">
-<!--        <a href="http://localhost:8080/oauth2/authorization/naver">-->
-<!--         -->
-<!--        </a>-->
-        <img src="@/assets/img/login/btnG_완성형.png" style="width: 200px; height: 45px;" @click="NaverLogin">
+        <a href="http://localhost:8080/oauth2/authorization/naver">
+          <img src="@/assets/img/login/btnG_완성형.png" style="width: 200px; height: 45px;" @click="NaverLogin">
+        </a>
       </a-col>
       <a-col align="center" :span="24">
         <a href="http://localhost:8080/oauth2/authorization/google">
