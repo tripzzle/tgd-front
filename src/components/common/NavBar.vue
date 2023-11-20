@@ -7,14 +7,67 @@ import locale from "ant-design-vue/es/locale/ko_KR";
 import { ConfigProvider } from "ant-design-vue";
 import { RouterLink } from "vue-router";
 import {onMounted, ref} from "vue";
+import axios from "axios";
+
 moment.locale('ko');  // Change this line
+
 const openModal = () => {
   console.log(store);
   store.open = true;
   console.log("openModal");
 };
 
+const getCookie = (key) => {
+//쿠키는 한번에 모두 불러와지기 때문에 사용할때 ';'나눠서 선택적으로 가져와야한다.
+  const cookies = document.cookie.split(`; `).map((el) => el.split('='));
+  let getItem = [];
 
+  for (let i = 0; i < cookies.length; i++) {
+    if (cookies[i][0] === key) {
+      getItem.push(cookies[i][1]);
+      break;
+    }
+  }
+
+  if (getItem.length > 0) {
+    return getItem[0];
+  }
+};
+
+function parseJwt(token) {
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
+};
+
+async function  getUserInfo() {
+  const token = getCookie("Authorization");
+  if (token) {
+    // 토큰이 있으면 로그인 처리
+    var decoded = parseJwt(token);
+
+    await axios.get(`http://localhost:8080/api/user/mypage?userId=${decoded.sub}`, {
+      headers: {
+        'X-AUTH-TOKEN': token
+      }
+    })
+        .then(function (response) {
+          router.push({
+            name: 'mypage',
+            query: {
+              npm: JSON.stringify(response.data)
+            }
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  }
+}
 
 const isLoggedIn = ref(false); // 로그인 여부를 저장하는 변수
 const logout = () => {
@@ -39,9 +92,7 @@ onMounted(() => {
         <div v-if="isLoggedIn">
           <a-button class="custom-button" @click="logout">로그아웃</a-button>
           |
-          <router-link :to="{ name: 'mypage' }">
-            <a-button class="custom-button">마이페이지</a-button>
-          </router-link>
+          <a-button class="custom-button" @click="getUserInfo">마이페이지</a-button>
         </div>
         <div v-else>
           <router-link :to="{ name: 'login' }">
