@@ -1,6 +1,8 @@
 <script setup>
 import NavBar from "@/components/common/NavBar.vue";
 import { RouterView } from "vue-router";
+import { ref, onMounted } from "vue";
+
 </script>
 
 <template>

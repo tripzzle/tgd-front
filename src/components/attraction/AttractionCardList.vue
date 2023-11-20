@@ -20,8 +20,6 @@ import AttractionDetailModal from "@/components/attraction/AttractionDetailModal
 import {useStore} from "@/stores/store.js";
 import API from "@/components/schedule/write/api/api";
 
-const {addToList} = useStore();
-
 const selectedAttraction = ref(null);
 const height = ref(6);
 const width = ref(6);
@@ -30,6 +28,12 @@ const lng = ref(127.979745);
 const open = ref(false);
 
 const localAttractions = ref([]);
+
+const emit = defineEmits(["addToList"]);
+const addToList = (item) => {
+  console.log("addToList in AttractionCardList", item);
+  emit('addToList', item);
+}
 
 const props = defineProps({
   attractions: Object

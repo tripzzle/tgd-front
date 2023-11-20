@@ -29,35 +29,36 @@ const props = defineProps(["item"]);
   align-items: center;
   color: black;
 
-  > img {
-    border-radius: 20px;
-  }
+> img {
+  border-radius: 20px;
+}
 
-  .card-content {
-    width: 60%;
-    padding-left: 10px;
-    display: flex;
-    flex-direction: column;
-  }
+.card-content {
+  width: 60%;
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+}
 
-  .card-content h3 {
-    margin-bottom: 25px;
-    white-space: nowrap;
-  }
+.card-content h3 {
+  margin-bottom: 25px;
+  white-space: nowrap;
+}
 
-  .card-content h6 {
-    margin-bottom: 10px;
-    white-space: nowrap;
-  }
+.card-content h6 {
+  margin-bottom: 10px;
+  white-space: nowrap;
+}
 
-  .button-box {
-    display: flex;
-    flex-direction: row;
+.button-box {
+  display: flex;
+  flex-direction: row;
 
-    button {
-      margin-right: 10px;
-    }
-  }
+button {
+  margin-right: 10px;
+}
+
+}
 }
 
 .ant-btn {
@@ -78,9 +79,10 @@ img {
   font-size: 0.9rem;
   transition: color 0.3s;
 
-  span {
-    margin-left: 0.5rem;
-  }
+span {
+  margin-left: 0.5rem;
+}
+
 }
 
 .icon-button.heart {

@@ -30,9 +30,9 @@ const router = createRouter({
             component: () => import('@/components/schedule/write/view/ScheduleWriteView.vue'),
         },
         {
-            path: '/login/oauth2/code/:where',
-            name: 'oauth2',
-            component: () => import('@/views/OAuth2View.vue'),
+            path: '/signup',
+            name: 'signup',
+            component: () => import('@/views/SignupView.vue'),
 
         },
 
