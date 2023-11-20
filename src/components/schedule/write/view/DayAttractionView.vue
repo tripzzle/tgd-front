@@ -103,6 +103,7 @@ const prevSlide = () => {
   align-items: center;
   justify-content: space-between;
   padding: 50px 10px;
+  height: 10px;
   background: #A385CF;
 }
 
