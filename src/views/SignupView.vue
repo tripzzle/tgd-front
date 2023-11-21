@@ -2,6 +2,7 @@
 import {ref} from 'vue';
 import {useRoute, useRouter} from "vue-router";
 import axios from "axios";
+const server = import.meta.env.VITE_SERVER;
 
 const route = useRoute();
 const router = useRouter();
@@ -28,39 +29,31 @@ const getCookie = (key) => {
 };
 
 //파일 업로드
-const fileList = ref([]);
-
-const log = () => {
-  console.log(fileList.value);
-}
+const fileList = ref(null);
+const handleFileUpload = (event) => {
+  fileList.value = event.target.files[0];
+};
 const signup = async () => {
   let token = getCookie("Authorization");
-
-  const formData = new FormData();
-
   // 파일 첨부
-  if (fileList.value) {
-    formData.append("file", fileList.value[0]);
-  }
+  let formData = new FormData();
 
-  // 다른 데이터 첨부
-  for (const key in userInfo.value) {
-    formData.append(key, userInfo.value[key]);
-  }
+// 프로필 이미지 formData에 추가
+  formData.append('file', fileList.value);
+  formData.append('userInfo', JSON.stringify(userInfo.value));
 
-
-
-  await axios.post("http://localhost:8080/api/user/signup", formData,
-      {
+  await axios.post(`${server}/api/user/signup`,
+      formData, {
         headers: {
-          "X-AUTH-TOKEN": token,
+          'Content-Type': 'multipart/form-data',
+          'X-AUTH-TOKEN': token
         },
-      })
+      }
+  )
       .then(response => {
         const newToken = response.data;
         document.cookie = `Authorization=${newToken}`;
         router.push({name: "main"})
-        console.log(response.data);
       })
       .catch(error => {
         // 요청이 실패했을 때의 동작
@@ -93,7 +86,7 @@ const signup = async () => {
           </a-radio-group>
         </a-form-item>
         <a-form-item label="프로필 이미지" @click="log">
-          <input type="file" id="upload-image" v-on:change="fileList"/>
+          <input type="file" id="upload-image" v-on:change="handleFileUpload"/>
         </a-form-item>
       </a-form>
     </div>
