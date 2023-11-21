@@ -17,7 +17,6 @@ import {ref, onMounted, computed} from "vue";
 import axios from "axios";
 import AttractionDetail from "@/components/attraction/AttractionDetail.vue";
 import AttractionDetailModal from "@/components/attraction/AttractionDetailModal.vue";
-import {useStore} from "@/stores/store.js";
 import API from "@/components/schedule/write/api/api";
 
 const selectedAttraction = ref(null);

@@ -16,9 +16,9 @@
     <transition :name="slideDirection" mode="out-in">
       <div :key="currentSlide" class="items">
         <div v-if="props.days.length > 0">
-          <div v-for="attraction in props.days[currentSlide].attractions" :key="attraction.attractionId"
-               @deleteToList="deleteToList(attraction)" style="padding: 10px">
-            <DayAttractionDetail :item="attraction"/>
+          <div v-for="(attraction, index) in props.days[currentSlide].attractions" :key="attraction.attractionId"
+                style="padding: 10px">
+            <DayAttractionDetail @deleteToList="deleteToList(attraction, index)" :item="attraction"/>
           </div>
         </div>
       </div>
@@ -27,24 +27,41 @@
 </template>
 <script setup>
 import {reactive, ref, watch} from "vue";
-import {useStore} from "@/stores/store.js";
 import DayAttractionDetail from "@/components/attraction/DayAttractionDetail.vue";
 
-const {deleteToList} = useStore();
 const collapsed = ref(false);
 const dayAttractions = reactive([]);
 let currentSlide = ref(0);
 let slideDirection = ref('forward');
 
+
+
 const props = defineProps({
   days: {
     type: Array,
     default: () => []
+  },
+
+  slide : {
+    type: Number,
   }
 });
 
+watch (
+    () => props.slide,
+    () => {
+      currentSlide.value = props.slide
+    },
+    { immediate: true}
+)
+
+const deleteToList = (attraction, index) =>{
+  console.log("DayAttractionView's deleteToList",attraction);
+  emit("deleteToList", attraction, currentSlide.value, index);
+}
+
 // day 일자에 추가하기 위해 이벤트 등록
-const emit = defineEmits(["moveAttractionView"]);
+const emit = defineEmits(["moveAttractionView", "deleteToList"]);
 const moveAttractionView = () => {
   emit("moveAttractionView", currentSlide.value);
 };
@@ -86,6 +103,7 @@ const prevSlide = () => {
   align-items: center;
   justify-content: space-between;
   padding: 50px 10px;
+  height: 10px;
   background: #A385CF;
 }
 
