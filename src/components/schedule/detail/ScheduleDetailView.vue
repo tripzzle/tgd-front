@@ -15,6 +15,33 @@
       날짜 : {{ item.date }}
     </div>
     <a-button @click="handleButtonClick">상세 일정 보기</a-button>
+    <p> 댓글 </p>
+    <p style="border: 1px solid"></p>
+    <a-comment>
+      <template #avatar>
+        <a-avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
+      </template>
+      <template #content>
+        <a-form-item>
+          <a-textarea v-model:value="value" :rows="4" />
+        </a-form-item>
+        <a-form-item>
+          <a-button html-type="submit" :loading="submitting" type="primary" @click="handleSubmit">
+            댓글 달기
+          </a-button>
+        </a-form-item>
+      </template>
+    </a-comment>
+    <a-list
+        v-if="comments.length"
+        :data-source="comments"
+        :header="`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`"
+        item-layout="horizontal"
+    >
+      <div v-for="comment in comments" :key="comment.commentId">
+        <CommentView :comment="comment"/>
+      </div>
+    </a-list>
   </div>
 </template>
 
@@ -22,8 +49,8 @@
 import {onMounted, ref} from 'vue';
 import API from '@/components/schedule/detail/api/api'
 import axios from "axios";
-import ScheduleDayDetailView from "@/components/schedule/detail/ScheduleDayDetailView.vue";
-import {useRouter, useRoute} from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
+import CommentView from "@/components/schedule/detail/CommentView.vue";
 
 const id = ref(null);
 const schedule = ref();
@@ -32,30 +59,66 @@ const startDate = ref();
 const endDate = ref();
 const router = useRouter();
 const route = useRoute();
+const comments = ref([]);
+const submitting = ref(false);
+const value = ref('');
 
+const handleSubmit = () => {
+  if (!value.value) {
+    return;
+  }
+
+  submitting.value = true;
+
+  setTimeout(() => {
+    submitting.value = false;
+    comments.value = [
+      {
+        author: 'Han Solo',
+        avatar: 'https://joeschmoe.io/api/v1/random',
+        content: value.value,
+        datetime: dayjs().fromNow(),
+      },
+      ...comments.value,
+    ];
+    value.value = '';
+  }, 1000);
+};
 const handleButtonClick = () => {
   console.log("버튼 누름", dayResponse.value, startDate.value, endDate.value);
 
-    router.push({
-      name: 'schedule',
-      query: { startDate : startDate.value, endDate : endDate.value, type : detail}
-    });
+  router.push({
+    name: 'schedule',
+    params: {id: id.value},
+    query: {startDate: startDate.value, endDate: endDate.value, type: true}
+  });
 }
 
 onMounted(
     async () => {
       id.value = route.params.id;
       // 컴포넌트가 마운트될 때 서버로부터 데이터를 가져옴
-      const response = await axios.get(
+      await axios.get(
           API.getScheduleDetailById(id.value)
-      );
-      console.log(response.data)
-      schedule.value = response.data;
-      dayResponse.value = response.data.dayResponses;
-      console.log(dayResponse.value[0]);
-      startDate.value = dayResponse.value[0]?.date;
-      endDate.value = dayResponse.value[dayResponse.value.length - 1]?.date;
-      console.log("dayResponse in ScheduleDetailView", dayResponse.value)
-    }
-);
+      ).then((response) => {
+        let {data} = response;
+        console.log(data)
+        schedule.value = data;
+        dayResponse.value = data.dayResponses;
+        console.log(dayResponse.value[0]);
+        startDate.value = dayResponse.value[0]?.date;
+        endDate.value = dayResponse.value[dayResponse.value.length - 1]?.date;
+        console.log("dayResponse in ScheduleDetailView", dayResponse.value);
+      });
+
+      // 댓글 리스폰스
+      await axios.get(API.getCommentsByScheduleId(id.value))
+          .then((response) => {
+            let {data} = response;
+            console.log("댓글 ", data);
+            comments.value = data
+          }).catch((error) => {
+            console.log(error);
+          })
+    });
 </script>
