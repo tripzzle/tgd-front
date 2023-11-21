@@ -1,9 +1,19 @@
 <script setup>
 import {RouterLink, useRouter} from "vue-router";
-import {onMounted} from 'vue';
+import {onMounted, ref} from 'vue';
 import axios from "axios";
-
+const server = import.meta.env.VITE_SERVER;
+const aouth = import.meta.env.VITE_AOUTH;
 const router = useRouter();
+
+
+const login = ref({
+  naver: server+aouth+"naver",
+  kakao: server+aouth+"kakao",
+  google: server+aouth+"google",
+
+})
+
 // 쿠키 확인 함수
 const getCookie = (key) => {
 //쿠키는 한번에 모두 불러와지기 때문에 사용할때 ';'나눠서 선택적으로 가져와야한다.
@@ -41,7 +51,7 @@ function parseJwt(token) {
     var decoded = parseJwt(token);
 
     if (decoded.roles && decoded.roles.length === 1) {
-      await axios.get(`http://localhost:8080/api/user/signup?userId=${decoded.sub}`, {
+      await axios.get(`${server}/api/user/signup?userId=${decoded.sub}`, {
         headers: {
           'X-AUTH-TOKEN': token
         }
@@ -77,7 +87,7 @@ function parseJwt(token) {
 
     <a-row class="login-container" justify="center" align="middle">
       <a-col align="center" :span="24">
-        <a href="http://localhost:8080/oauth2/authorization/kakao">
+        <a :href="login.google">
           <img
               class="login-button-img"
               src="@/assets/img/login/kakao_login_medium_wide.png"
@@ -85,12 +95,12 @@ function parseJwt(token) {
         </a>
       </a-col>
       <a-col align="center" :span="24">
-        <a href="http://localhost:8080/oauth2/authorization/naver">
+        <a :href="login.google">
           <img src="@/assets/img/login/btnG_완성형.png" style="width: 200px; height: 45px;" @click="NaverLogin">
         </a>
       </a-col>
       <a-col align="center" :span="24">
-        <a href="http://localhost:8080/oauth2/authorization/google">
+        <a :href="login.google">
           <img style="width: 190px; height: 40px" src="@/assets/img/login/web_light_sq_SU@3x.png"/>
         </a>
       </a-col>
