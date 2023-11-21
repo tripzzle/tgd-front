@@ -35,12 +35,6 @@ const router = createRouter({
             component: () => import('@/views/SignupView.vue'),
 
         },
-        {
-            path: '/schedule/:id',
-            name: 'ScheduleDayDetailView',
-            component: () => import('@/components/schedule/detail/ScheduleDayDetailView.vue'),
-        },
-
     ],
 
 });

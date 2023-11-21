@@ -1,14 +1,14 @@
 <template>
   <div>
+    <p><img :src="schedule?.imgUrl" alt="이미지 없음"></p>
     <h1>일정 상세 페이지</h1>
     <p>일정 ID: {{ id }}</p>
     <p>제목 : {{ schedule?.title }}</p>
     <p>내용 : {{ schedule?.content }}</p>
-    <p>이미지 : <img :src="schedule?.imgUrl" alt="이미지 없음"></p>
     <p> 여행 일자 : {{ startDate }} ~ {{ endDate }}</p>
     <p> 성별 : {{ schedule?.user?.sex ? "여성" : "남성" }}</p>
-    <p> 생일 : {{ schedule?.user?.birth}}</p>
-    <p> 닉넴 : {{ schedule?.user?.nickname}}</p>
+    <p> 생일 : {{ schedule?.user?.birth }}</p>
+    <p> 닉넴 : {{ schedule?.user?.nickname }}</p>
     <a-avatar :src="schedule?.user?.imgUrl"></a-avatar>
     <div v-for="item in dayResponse" :key="item.date">
       날짜 ID : {{ item.dayId }}
@@ -23,7 +23,7 @@ import {onMounted, ref} from 'vue';
 import API from '@/components/schedule/detail/api/api'
 import axios from "axios";
 import ScheduleDayDetailView from "@/components/schedule/detail/ScheduleDayDetailView.vue";
-import { useRouter, useRoute } from 'vue-router';
+import {useRouter, useRoute} from 'vue-router';
 
 const id = ref(null);
 const schedule = ref();
@@ -34,9 +34,13 @@ const router = useRouter();
 const route = useRoute();
 
 const handleButtonClick = () => {
-  console.log("버튼 누름",dayResponse.value)
-  router.push({ name: 'ScheduleDayDetailView', params: { dayResponse : dayResponse.value } });
-};
+  console.log("버튼 누름", dayResponse.value, startDate.value, endDate.value);
+
+    router.push({
+      name: 'schedule',
+      query: { startDate : startDate.value, endDate : endDate.value, type : detail}
+    });
+}
 
 onMounted(
     async () => {
@@ -51,7 +55,7 @@ onMounted(
       console.log(dayResponse.value[0]);
       startDate.value = dayResponse.value[0]?.date;
       endDate.value = dayResponse.value[dayResponse.value.length - 1]?.date;
-      console.log("dayResponse in ScheduleDetailView",dayResponse.value)
+      console.log("dayResponse in ScheduleDetailView", dayResponse.value)
     }
 );
 </script>

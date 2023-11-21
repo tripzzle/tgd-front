@@ -27,7 +27,7 @@ const currentSlide = ref(0);
 const goToAttraction = ref();
 
 const postSchedule = () => {
-  console.log("일정 생성 버튼 클릭");
+  console.log("일정 생성 버튼 클릭", days.value);
 }
 
 // 관광지를 삭제하는 메서드, 현재 일자에 해당하는 동일한 관광지를 지워준다.
