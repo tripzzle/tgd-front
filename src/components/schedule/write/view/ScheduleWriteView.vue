@@ -1,16 +1,16 @@
 <template>
   <a-flex class="space" gap="large">
-    <AttractionView v-if="showAttractionView" @goBack="showAttractionView = false"
+    <AttractionView v-if="showAttractionView" @goBack="handleMoveDayAttractionView"
                     @add-to-list="handleAddAttraction"/>
-    <DayAttractionView v-if="!showAttractionView" :days="days" @moveAttractionView="handleMoveAttractionView"
-                       @removeAttraction="handleRemoveAttraction"/>
+    <DayAttractionView v-if="!showAttractionView" :slide="currentSlide" :days="days"
+                       @moveAttractionView="handleMoveAttractionView"
+                       @removeAttraction="handleRemoveAttraction" @delete-to-list="handleRemoveAttraction"/>
     <MapView/>
   </a-flex>
 </template>
 
 <script setup>
-import {onMounted, reactive, ref, watch} from "vue";
-import {useStore} from "@/stores/store.js";
+import {onMounted, reactive, ref} from "vue";
 import {useRoute} from 'vue-router';
 import MapView from "@/components/schedule/write/view/MapView.vue";
 import DayAttractionView from "@/components/schedule/write/view/DayAttractionView.vue";
@@ -19,18 +19,20 @@ import AttractionView from "@/components/schedule/write/view/AttractionView.vue"
 const route = useRoute();
 const startDate = ref('');
 const endDate = ref('');
-const {getDayAttractions} = useStore();
 const dayAttractions = reactive([]);
 let days = ref();
 let showAttractionView = ref(false);
 const currentSlide = ref(0);
 
-const handleRemoveAttraction = (attraction) => {
-  console.log("remove in ScheduleWriteView", attraction);
+// 관광지를 삭제하는 메서드, 현재 일자에 해당하는 동일한 관광지를 지워준다.
+const handleRemoveAttraction = (attraction, currentSlide, index) => {
+  console.log("remove in ScheduleWriteView", attraction, currentSlide,
+      days.value[currentSlide], index);
+  days.value[currentSlide].attractions.splice(index, 1);
 }
 
 const handleAddAttraction = (attraction) => {
-  console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value , days.value[currentSlide.value]);
+  console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value, days.value[currentSlide.value]);
   days.value[currentSlide.value].attractions.push(attraction);
   console.log(days.value)
 }
@@ -40,6 +42,12 @@ const handleMoveAttractionView = (val) => {
   console.log(val);
   currentSlide.value = val;
   showAttractionView.value = true;
+};
+
+const handleMoveDayAttractionView = () => {
+  // currentSlide 값을 사용하여 작업을 수행합니다.
+  console.log(days.value);
+  showAttractionView.value = false;
 };
 
 const generateDays = (start, end) => {
@@ -62,12 +70,6 @@ const updateDatesFromQuery = () => {
   days.value = generateDays(startDate.value, endDate.value);
   console.log(days.value);
 };
-
-watch(getDayAttractions.value, (value1) => {
-  dayAttractions.value = value1;
-});
-
-console.log("test" + getDayAttractions.value);
 
 onMounted(updateDatesFromQuery);
 </script>
