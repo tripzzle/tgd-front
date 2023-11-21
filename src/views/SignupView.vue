@@ -40,7 +40,7 @@ const signup = async () => {
 
 // 프로필 이미지 formData에 추가
   formData.append('file', fileList.value);
-  formData.append('userInfo', JSON.stringify(userInfo.value));
+  formData.append('userInfo', new Blob([JSON.stringify(userInfo.value)], {type:'application/json'}));
 
   await axios.post(`${server}/api/user/signup`,
       formData, {
