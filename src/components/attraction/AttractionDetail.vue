@@ -6,12 +6,12 @@
       <h6>{{ item.address }}</h6>
       <div class="button-box">
         <button class="icon-button heart">
-          <i class="fas fa-heart"></i> <span>10000</span>
+          <i class="fas fa-heart"></i> <span>{{ item.likeCount }}</span>
         </button>
         <button class="icon-button star">
-          <i class="fas fa-star"></i> <span>10000</span>
+          <i class="fas fa-star"></i> <span>{{ item.wishCount }}</span>
         </button>
-        <button @click="handleClick($event, item)">+</button>
+        <a-button @click="handleClick($event, item)">+</a-button>
       </div>
     </div>
   </div>
