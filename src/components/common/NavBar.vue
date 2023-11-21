@@ -32,10 +32,8 @@ function parseJwt(token) {
 async function  getUserInfo() {
   const token = localStorage.getItem("token");
   if (token) {
-
-    var decoded = parseJwt(token);
-
-    await axios.get(`http://localhost:8080/api/user/mypage?userId=${decoded.sub}`, {
+    console.log(token)
+    await axios.get(`${server}/api/user/mypage`, {
       headers: {
         'X-AUTH-TOKEN': token
       }
@@ -50,7 +48,7 @@ async function  getUserInfo() {
           });
         })
         .catch(function (error) {
-          console.log(error);
+          console.log("!!! : " + error);
         });
   }
 }
