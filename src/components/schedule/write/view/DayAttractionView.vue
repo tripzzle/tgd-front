@@ -113,6 +113,7 @@ const prevSlide = () => {
   padding: 0;
   border: none;
   background: red;
+  border-radius: 20px;
   color: #fff;
   opacity: 0.3;
   transition: all 0.3s ease;
