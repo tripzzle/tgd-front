@@ -5,8 +5,9 @@
     <DayAttractionView v-if="!showAttractionView" :slide="currentSlide" :days="days"
                        @moveAttractionView="handleMoveAttractionView"
                        @removeAttraction="handleRemoveAttraction" @delete-to-list="handleRemoveAttraction"/>
-    <MapView/>
+    <MapView :attraction="goToAttraction"/>
   </a-flex>
+  <a-button style="width: 100%" @click="postSchedule">일정 만들기</a-button>
 </template>
 
 <script setup>
@@ -23,6 +24,11 @@ const dayAttractions = reactive([]);
 let days = ref();
 let showAttractionView = ref(false);
 const currentSlide = ref(0);
+const goToAttraction = ref();
+
+const postSchedule = () => {
+  console.log("일정 생성 버튼 클릭");
+}
 
 // 관광지를 삭제하는 메서드, 현재 일자에 해당하는 동일한 관광지를 지워준다.
 const handleRemoveAttraction = (attraction, currentSlide, index) => {
@@ -34,7 +40,8 @@ const handleRemoveAttraction = (attraction, currentSlide, index) => {
 const handleAddAttraction = (attraction) => {
   console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value, days.value[currentSlide.value]);
   days.value[currentSlide.value].attractions.push(attraction);
-  console.log(days.value)
+  goToAttraction.value = attraction;
+  console.log(attraction.title, "send attraction from ScheduleWriteView");
 }
 
 const handleMoveAttractionView = (val) => {

@@ -6,7 +6,7 @@
     <p>내용 : {{ schedule?.content }}</p>
     <p>이미지 : <img :src="schedule?.imgUrl" alt="이미지 없음"></p>
     <p> 여행 일자 : {{ startDate }} ~ {{ endDate }}</p>
-    <p> 성별 : {{ schedule?.user?.sex ? "남성" : "여성"}}</p>
+    <p> 성별 : {{ schedule?.user?.sex ? "여성" : "남성" }}</p>
     <p> 생일 : {{ schedule?.user?.birth}}</p>
     <p> 닉넴 : {{ schedule?.user?.nickname}}</p>
     <a-avatar :src="schedule?.user?.imgUrl"></a-avatar>
