@@ -40,6 +40,7 @@
                 v-model:fileList="fileList"
                 name="file"
                 max-count="1"
+                :before-upload="handleBefore"
             >
               <p class="ant-upload-drag-icon">
                 <inbox-outlined></inbox-outlined>
@@ -114,6 +115,10 @@ const rules = {
   ],
 };
 const open = ref(false);
+
+function handleBefore() {
+  return false;
+}
 
 // 파일 저장 객체
 const fileList = ref(null);
