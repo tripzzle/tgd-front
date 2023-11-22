@@ -1,17 +1,16 @@
 <template>
   <div class="card">
-    <img :src="item.imgUrl" alt="image"/>
+    <img :src="item?.imgUrl" alt="image"/>
     <div class="card-content">
       <h3>{{ item.title }}</h3>
-      <div class="button-box">
-        <a-button icon="" @click="deleteToList">x</a-button>
-      </div>
     </div>
+    <DeleteOutlined @click="deleteToList"/>
   </div>
 </template>
 
 <script setup>
 import {defineProps} from "vue";
+import {DeleteOutlined} from '@ant-design/icons-vue';
 
 const props = defineProps(["item"]);
 
