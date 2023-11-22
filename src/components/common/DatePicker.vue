@@ -1,20 +1,20 @@
 <template>
   <div>
     <a-modal
-      title="언제 여행을 가고 싶나요?"
-      :open="store.open"
-      @ok="handleOk"
-      @cancel="handleCancel"
-      okText="일정 만들기"
-      cancelText="취소"
-      class="centered-title centered-content">
+        title="언제 여행을 가고 싶나요?"
+        :open="store.open"
+        @ok="handleOk"
+        @cancel="handleCancel"
+        okText="일정 만들기"
+        cancelText="취소"
+        class="centered-title centered-content">
       <a-col align="center">
         <a-space direction="vertical" :size="12">
           <a-range-picker
-            v-model:value="value1"
-            picker="date"
-            :presets="rangePresets"
-            @change="handleChange" />
+              v-model:value="value1"
+              picker="date"
+              :presets="rangePresets"
+              @change="handleChange"/>
         </a-space>
       </a-col>
     </a-modal>
@@ -24,7 +24,7 @@
 <script setup>
 import {ref} from "vue";
 import {store} from "@/stores/store.js";
-import { useRouter } from 'vue-router';
+import {useRouter} from 'vue-router';
 
 const value1 = ref([]);
 
@@ -32,14 +32,23 @@ const value1 = ref([]);
 // 일정 생성 페이지로 연결하기
 const router = useRouter();
 
-const handleOk = (e) => {
+const handleOk = () => {
   if (value1.value && value1.value.length === 2) {
     const startDate = value1.value[0].format('YYYY-MM-DD');
     const endDate = value1.value[1].format('YYYY-MM-DD');
 
+    const token = localStorage.getItem("token");
+    if (token == null) {
+      store.open = false;
+      router.push({
+        name: 'login'
+      })
+      return;
+    }
+
     router.push({
       name: 'schedule',
-      query: { startDate, endDate }
+      query: {startDate, endDate}
     });
   }
 

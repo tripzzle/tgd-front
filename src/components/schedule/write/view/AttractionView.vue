@@ -13,6 +13,7 @@
         <SidoOption @update="onUpdateOption"/>
       </a-row>
       <AttractionCardList :attractions="searchResult" @add-to-list="addToList"/>
+      <InfiniteLoading @infinite="load" align="center"/>
     </a-menu>
   </a-layout>
 
@@ -23,6 +24,8 @@ import SidoOption from "@/components/schedule/write/SidoOption.vue";
 import API from '../api/api.js';
 import {ref} from "vue";
 import axios from "axios";
+import InfiniteLoading from "v3-infinite-loading";
+import "v3-infinite-loading/lib/style.css";
 
 const collapsed = ref(false);
 const selectedKeys = ref(["1"]);

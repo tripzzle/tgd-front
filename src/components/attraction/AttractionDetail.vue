@@ -11,7 +11,7 @@
         <button class="icon-button star">
           <i class="fas fa-star"></i> <span>{{ item.wishCount }}</span>
         </button>
-        <a-button @click="handleClick($event, item)">+</a-button>
+        <PlusSquareOutlined @click="handleClick($event, item)" />
       </div>
     </div>
   </div>
@@ -19,6 +19,7 @@
 
 <script setup>
 import {defineProps} from "vue";
+import {PlusSquareOutlined} from '@ant-design/icons-vue';
 
 // 상위 컴포넌트에서 아이템 받아옴
 const props = defineProps(["item"]);
