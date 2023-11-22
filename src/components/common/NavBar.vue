@@ -32,10 +32,8 @@ function parseJwt(token) {
 async function  getUserInfo() {
   const token = localStorage.getItem("token");
   if (token) {
-
-    var decoded = parseJwt(token);
-
-    await axios.get(`http://localhost:8080/api/user/mypage?userId=${decoded.sub}`, {
+    console.log(token)
+    await axios.get(`${server}/api/user/mypage`, {
       headers: {
         'X-AUTH-TOKEN': token
       }
@@ -44,13 +42,13 @@ async function  getUserInfo() {
           console.log(JSON.stringify("유저정보 서버에서 가죠옴 " +  JSON.stringify(response.data)))
           router.push({
             name: 'mypage',
-            query: {
+            params: {
               userInfo: JSON.stringify(response.data)
             }
           });
         })
         .catch(function (error) {
-          console.log(error);
+          console.log("!!! : " + error);
         });
   }
 }
