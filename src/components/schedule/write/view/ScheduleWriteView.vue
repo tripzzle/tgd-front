@@ -36,21 +36,7 @@
       <a-row :gutter="16">
         <a-col :span="24">
           <a-form-item label="일정 이미지" name="image">
-            <a-upload-dragger
-                v-model:fileList="fileList"
-                name="file"
-                :max-count="1"
-                @change="handleChange"
-                @drop="handleDrop"
-            >
-              <p class="ant-upload-drag-icon">
-                <inbox-outlined></inbox-outlined>
-              </p>
-              <p class="ant-upload-text">영역에 이미지를 드래그하거나 영역을 클릭하세요</p>
-              <p class="ant-upload-hint">
-                일정 이미지로 사용하고 싶은 배경 사진을 선택하세요
-              </p>
-            </a-upload-dragger>
+            <input type="file" id="upload-image" @change="handleChange"/>
           </a-form-item>
           <a-form-item label="공개여부" name="viewYn">
             <a-radio-group v-model:value="form.viewYn">
@@ -76,6 +62,9 @@ import {useRoute} from 'vue-router';
 import MapView from "@/components/schedule/write/view/MapView.vue";
 import DayAttractionView from "@/components/schedule/write/view/DayAttractionView.vue";
 import AttractionView from "@/components/schedule/write/view/AttractionView.vue";
+import {message} from 'ant-design-vue';
+import axios from "axios";
+import router from "@/router";
 
 const route = useRoute();
 const startDate = ref('');
@@ -164,22 +153,13 @@ const rules = {
   ],
 };
 const open = ref(false);
-import {message} from 'ant-design-vue';
-import axios from "axios";
-import router from "@/router";
 
 // 파일 저장 객체
 const fileList = ref(null);
 // 업로드할 파일을 선택하는 경우 발생하는 이벤트
-const handleChange = info => {
-  console.log("infofile", info.file)
-  fileList.value = info.file;
+const handleChange =  (event) => {
+  fileList.value = event.target.files[0];
 };
-
-function handleDrop(e) {
-  console.log(e);
-  fileList.value = e.target.value;
-}
 
 const showDrawer = () => {
   open.value = true;
@@ -201,6 +181,7 @@ const post = async () => {
 
     // 프로필 이미지 formData에 추가
     formData.append('image', fileList.value);
+    console.log(fileList.value);
 
     // 일자에 있는 관광지, 메모들 form에 붙이기
     form.days = days.value.map(day => ({
@@ -233,7 +214,7 @@ const post = async () => {
     console.log(errors);
     message.error('모든 필드를 올바르게 입력해 주세요.');
   }
-}
+};
 </script>
 
 <style scoped>
