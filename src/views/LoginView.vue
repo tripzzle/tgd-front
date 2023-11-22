@@ -5,7 +5,7 @@ import axios from "axios";
 const server = import.meta.env.VITE_SERVER;
 const aouth = import.meta.env.VITE_AOUTH;
 const router = useRouter();
-
+import { user } from "@/stores/store.js";
 
 const login = ref({
   naver: server+aouth+"naver",
@@ -13,24 +13,6 @@ const login = ref({
   google: server+aouth+"google",
 
 })
-
-// 쿠키 확인 함수
-const getCookie = (key) => {
-//쿠키는 한번에 모두 불러와지기 때문에 사용할때 ';'나눠서 선택적으로 가져와야한다.
-  const cookies = document.cookie.split(`; `).map((el) => el.split('='));
-  let getItem = [];
-
-  for (let i = 0; i < cookies.length; i++) {
-    if (cookies[i][0] === key) {
-      getItem.push(cookies[i][1]);
-      break;
-    }
-  }
-
-  if (getItem.length > 0) {
-    return getItem[0];
-  }
-};
 
 function parseJwt(token) {
   var base64Url = token.split('.')[1];
@@ -46,9 +28,10 @@ onMounted(async() => {
   const param = new URLSearchParams(window.location.search);
   const token = param.get("Authorization");
 
-  localStorage.setItem("token", token);
-
   if (token) {
+    user.isLogin = true;
+    user.token = token;
+    localStorage.setItem("token", token)
     // 토큰이 있으면 로그인 처리
     var decoded = parseJwt(token);
 
