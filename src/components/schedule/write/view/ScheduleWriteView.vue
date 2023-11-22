@@ -5,7 +5,7 @@
     <DayAttractionView v-if="!showAttractionView" :slide="currentSlide" :days="days"
                        @moveAttractionView="handleMoveAttractionView"
                        @removeAttraction="handleRemoveAttraction" @delete-to-list="handleRemoveAttraction"/>
-    <MapView :attraction="goToAttraction"/>
+    <MapView :attraction="goToAttraction" :remove="remove"/>
   </a-flex>
   <a-button type="default" @click="showDrawer" style="width: 100%">
     일정 만들기
@@ -123,18 +123,38 @@ function handleBefore() {
 // 파일 저장 객체
 const fileList = ref(null);
 
+const remove = ref({});
+
 // 관광지를 삭제하는 메서드, 현재 일자에 해당하는 동일한 관광지를 지워준다.
 const handleRemoveAttraction = (attraction, currentSlide, index) => {
   console.log("remove in ScheduleWriteView", attraction, currentSlide,
       days.value[currentSlide], index);
   days.value[currentSlide].dayAttractions.splice(index, 1);
+  remove.value.slide = currentSlide;
+  remove.value.index = index;
+  remove.value.len = days.value[currentSlide].length;
 }
 
 const handleAddAttraction = (attraction) => {
   console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value, days.value[currentSlide.value]);
+  /*
+  days : [
+    {
+      date: 2023-11-22,
+      dayAttractions : [
+        {
+          attractionId,..
+        }
+      ]
+     }
+  ]
+   */
+  let id = days.value[currentSlide.value].dayAttractions.length;
+  attraction.id = id;
   days.value[currentSlide.value].dayAttractions.push(attraction);
+
   goToAttraction.value = attraction;
-  console.log(attraction.title, "send attraction from ScheduleWriteView");
+  console.log("dayday", days.value);
 }
 
 const handleMoveAttractionView = (val) => {
@@ -235,7 +255,7 @@ const updateDatesFromQuery = () => {
   endDate.value = route.query.endDate;
   console.log(startDate.value, endDate.value);
   days.value = generateDays(startDate.value, endDate.value);
-  console.log("dayday",days.value);
+  console.log("dayday", days.value);
 };
 
 onMounted(updateDatesFromQuery);
