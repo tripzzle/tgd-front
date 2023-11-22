@@ -48,10 +48,8 @@
               item-layout="horizontal"
       >
         <template #renderItem="{ item }">
-          <a-list-item key="item.title">
-            <template #actions>
-            </template>
-            <CommentView :comment="item"/>
+          <a-list-item :key="item.commentId">
+            <CommentView :comment="item" :schedule-id="schedule?.scheduleId"/>
           </a-list-item>
         </template>
       </a-list>
@@ -118,13 +116,22 @@ const handleSubmit = () => {
     return;
   }
 
+  const token = localStorage.getItem("token");
+  if (token == null) {
+    router.push({
+      name: 'login'
+    })
+    return;
+  }
+
   console.log("댓글 제출 전", id);
   submitting.value = true;
   axios.post(
       API.postCommentsByScheduleId(id.value),
-      {content: value.value, userId:2}, {
+      {content: value.value}, {
         headers: {
           'Content-Type': 'application/json',
+          'X-AUTH-TOKEN': token,
         }
       }
   );
@@ -133,7 +140,7 @@ const handleSubmit = () => {
   setTimeout(() => {
     submitting.value = false;
     getComments();
-  }, 1000);
+  }, 300);
 };
 
 const handleButtonClick = () => {

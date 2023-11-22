@@ -36,7 +36,19 @@
       <a-row :gutter="16">
         <a-col :span="24">
           <a-form-item label="일정 이미지" name="image">
-            <input type="file" id="upload-image" @change="handleChange"/>
+            <a-upload-dragger
+                v-model:fileList="fileList"
+                name="file"
+                max-count="1"
+            >
+              <p class="ant-upload-drag-icon">
+                <inbox-outlined></inbox-outlined>
+              </p>
+              <p class="ant-upload-text">클릭하여 파일을 업로드하세요.</p>
+              <p class="ant-upload-hint">
+                하나의 파일만 업로드 가능합니다.
+              </p>
+            </a-upload-dragger>
           </a-form-item>
           <a-form-item label="공개여부" name="viewYn">
             <a-radio-group v-model:value="form.viewYn">
@@ -76,6 +88,36 @@ const currentSlide = ref(0);
 const goToAttraction = ref();
 const server = import.meta.env.VITE_SERVER;
 
+const form = reactive({
+  title: '',
+  content: '',
+  viewYn: '',
+});
+const rules = {
+  title: [
+    {
+      required: true,
+      message: '제목을 입력해주세요',
+    },
+  ],
+  content: [
+    {
+      required: true,
+      message: '일정 상세 내용을 입력해주세요',
+    },
+  ],
+  viewYn: [
+    {
+      required: true,
+      message: '공개여부를 선택해주세요',
+    },
+  ],
+};
+const open = ref(false);
+
+// 파일 저장 객체
+const fileList = ref(null);
+
 // 관광지를 삭제하는 메서드, 현재 일자에 해당하는 동일한 관광지를 지워준다.
 const handleRemoveAttraction = (attraction, currentSlide, index) => {
   console.log("remove in ScheduleWriteView", attraction, currentSlide,
@@ -103,6 +145,73 @@ const handleMoveDayAttractionView = () => {
   showAttractionView.value = false;
 };
 
+const showDrawer = () => {
+  open.value = true;
+};
+const onClose = () => {
+  open.value = false;
+};
+
+// form 유효성 검사를 위한 객체
+const formRef = ref(null);
+const post = async () => {
+  try {
+    // form의 유효성 검사
+    await formRef.value.validate();
+
+    const token = localStorage.getItem("token");
+
+    if (token == null) {
+      await router.push({
+        name: 'login'
+      })
+      return;
+    }
+
+    let formData = new FormData();
+    let json = JSON.stringify(form);
+    console.log("json", json);
+
+    // 프로필 이미지 formData에 추가
+    formData.append('image', fileList.value[0].originFileObj);
+
+    // 일자에 있는 관광지, 메모들 form에 붙이기
+    form.days = days.value.map(day => ({
+      ...day,
+      dayAttractions: day.attractions,
+    }));
+    console.log(days.value)
+
+    // formData application/json 타입으로 붙이기
+    formData.append('post', new Blob([JSON.stringify(form)], {type: 'application/json'}));
+
+    console.log(formData);
+    // 서버로 post요청
+    await axios.post(`${server}/api/schedule`,
+        formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-AUTH-TOKEN': token,
+          },
+        }
+    )
+        .then(response => {
+          const parts = response.headers.get('location').split('/');
+          const id = parts[parts.length - 1];
+          console.log(id);
+          router.push({name: 'scheduleDetail', params: {id: id}});
+        })
+        .catch(error => {
+          // 요청이 실패했을 때의 동작
+          console.error(error);
+        });
+  } catch (errors) {
+    console.log(errors);
+    message.error('모든 필드를 올바르게 입력해 주세요.');
+  }
+};
+
+
 const generateDays = (start, end) => {
   const startDate = new Date(start);
   const endDate = new Date(end);
@@ -125,96 +234,6 @@ const updateDatesFromQuery = () => {
 };
 
 onMounted(updateDatesFromQuery);
-
-const form = reactive({
-  title: '',
-  content: '',
-  viewYn: '',
-  userId: 1
-});
-const rules = {
-  title: [
-    {
-      required: true,
-      message: '제목을 입력해주세요',
-    },
-  ],
-  content: [
-    {
-      required: true,
-      message: '일정 상세 내용을 입력해주세요',
-    },
-  ],
-  viewYn: [
-    {
-      required: true,
-      message: '공개여부를 선택해주세요',
-    },
-  ],
-};
-const open = ref(false);
-
-// 파일 저장 객체
-const fileList = ref(null);
-// 업로드할 파일을 선택하는 경우 발생하는 이벤트
-const handleChange =  (event) => {
-  fileList.value = event.target.files[0];
-};
-
-const showDrawer = () => {
-  open.value = true;
-};
-const onClose = () => {
-  open.value = false;
-};
-
-// form 유효성 검사를 위한 객체
-const formRef = ref(null);
-const post = async () => {
-  try {
-    // form의 유효성 검사
-    await formRef.value.validate();
-
-    let formData = new FormData();
-    let json = JSON.stringify(form);
-    console.log("json", json);
-
-    // 프로필 이미지 formData에 추가
-    formData.append('image', fileList.value);
-    console.log(fileList.value);
-
-    // 일자에 있는 관광지, 메모들 form에 붙이기
-    form.days = days.value.map(day => ({
-      ...day,
-      dayAttractions: day.attractions,
-    }));
-    console.log(days.value)
-    // formData application/json 타입으로 붙이기
-    formData.append('post', new Blob([JSON.stringify(form)], {type: 'application/json'}));
-    console.log(formData);
-    // 서버로 post요청
-    await axios.post(`${server}/api/schedule`,
-        formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-    )
-        .then(response => {
-          const parts = response.headers.get('location').split('/');
-          const id = parts[parts.length - 1];
-          console.log(id);
-          router.push({name: 'scheduleDetail', params: {id: id}});
-        })
-        .catch(error => {
-          // 요청이 실패했을 때의 동작
-          console.error(error);
-        });
-  } catch (errors) {
-    console.log(errors);
-    message.error('모든 필드를 올바르게 입력해 주세요.');
-  }
-};
 </script>
 
 <style scoped>
@@ -236,4 +255,5 @@ const post = async () => {
   margin-top: 8px;
   color: #666;
 }
+
 </style>
