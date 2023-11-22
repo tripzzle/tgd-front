@@ -127,12 +127,12 @@ const fileList = ref(null);
 const handleRemoveAttraction = (attraction, currentSlide, index) => {
   console.log("remove in ScheduleWriteView", attraction, currentSlide,
       days.value[currentSlide], index);
-  days.value[currentSlide].attractions.splice(index, 1);
+  days.value[currentSlide].dayAttractions.splice(index, 1);
 }
 
 const handleAddAttraction = (attraction) => {
   console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value, days.value[currentSlide.value]);
-  days.value[currentSlide.value].attractions.push(attraction);
+  days.value[currentSlide.value].dayAttractions.push(attraction);
   goToAttraction.value = attraction;
   console.log(attraction.title, "send attraction from ScheduleWriteView");
 }
@@ -183,7 +183,7 @@ const post = async () => {
     // 일자에 있는 관광지, 메모들 form에 붙이기
     form.days = days.value.map(day => ({
       ...day,
-      dayAttractions: day.attractions,
+      dayAttractions: day.dayAttractions,
     }));
     console.log(days.value)
 
@@ -227,7 +227,7 @@ const generateDays = (start, end) => {
     days.push(new Date(currentDate));
     currentDate.setDate(currentDate.getDate() + 1);
   }
-  return days.map(day => ({date: day, attractions: [...dayAttractions]}));
+  return days.map(day => ({date: day, dayAttractions: [...dayAttractions]}));
 };
 
 const updateDatesFromQuery = () => {
@@ -235,7 +235,7 @@ const updateDatesFromQuery = () => {
   endDate.value = route.query.endDate;
   console.log(startDate.value, endDate.value);
   days.value = generateDays(startDate.value, endDate.value);
-  console.log(days.value);
+  console.log("dayday",days.value);
 };
 
 onMounted(updateDatesFromQuery);
