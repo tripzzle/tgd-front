@@ -5,7 +5,7 @@
     <DayAttractionView v-if="!showAttractionView" :slide="currentSlide" :days="days"
                        @moveAttractionView="handleMoveAttractionView"
                        @removeAttraction="handleRemoveAttraction" @delete-to-list="handleRemoveAttraction"/>
-    <MapView :attraction="goToAttraction"/>
+    <MapView :attraction="goToAttraction" :remove="remove"/>
   </a-flex>
   <a-button type="default" @click="showDrawer" style="width: 100%">
     일정 만들기
@@ -36,7 +36,20 @@
       <a-row :gutter="16">
         <a-col :span="24">
           <a-form-item label="일정 이미지" name="image">
-            <input type="file" id="upload-image" @change="handleChange"/>
+            <a-upload-dragger
+                v-model:fileList="fileList"
+                name="file"
+                max-count="1"
+                :before-upload="handleBefore"
+            >
+              <p class="ant-upload-drag-icon">
+                <inbox-outlined></inbox-outlined>
+              </p>
+              <p class="ant-upload-text">클릭하여 파일을 업로드하세요.</p>
+              <p class="ant-upload-hint">
+                하나의 파일만 업로드 가능합니다.
+              </p>
+            </a-upload-dragger>
           </a-form-item>
           <a-form-item label="공개여부" name="viewYn">
             <a-radio-group v-model:value="form.viewYn">
@@ -76,61 +89,10 @@ const currentSlide = ref(0);
 const goToAttraction = ref();
 const server = import.meta.env.VITE_SERVER;
 
-// 관광지를 삭제하는 메서드, 현재 일자에 해당하는 동일한 관광지를 지워준다.
-const handleRemoveAttraction = (attraction, currentSlide, index) => {
-  console.log("remove in ScheduleWriteView", attraction, currentSlide,
-      days.value[currentSlide], index);
-  days.value[currentSlide].attractions.splice(index, 1);
-}
-
-const handleAddAttraction = (attraction) => {
-  console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value, days.value[currentSlide.value]);
-  days.value[currentSlide.value].attractions.push(attraction);
-  goToAttraction.value = attraction;
-  console.log(attraction.title, "send attraction from ScheduleWriteView");
-}
-
-const handleMoveAttractionView = (val) => {
-  // currentSlide 값을 사용하여 작업을 수행합니다.
-  console.log(val);
-  currentSlide.value = val;
-  showAttractionView.value = true;
-};
-
-const handleMoveDayAttractionView = () => {
-  // currentSlide 값을 사용하여 작업을 수행합니다.
-  console.log(days.value);
-  showAttractionView.value = false;
-};
-
-const generateDays = (start, end) => {
-  const startDate = new Date(start);
-  const endDate = new Date(end);
-  let currentDate = startDate;
-  const days = [];
-
-  while (currentDate <= endDate) {
-    days.push(new Date(currentDate));
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-  return days.map(day => ({date: day, attractions: [...dayAttractions]}));
-};
-
-const updateDatesFromQuery = () => {
-  startDate.value = route.query.startDate;
-  endDate.value = route.query.endDate;
-  console.log(startDate.value, endDate.value);
-  days.value = generateDays(startDate.value, endDate.value);
-  console.log(days.value);
-};
-
-onMounted(updateDatesFromQuery);
-
 const form = reactive({
   title: '',
   content: '',
   viewYn: '',
-  userId: 1
 });
 const rules = {
   title: [
@@ -154,11 +116,58 @@ const rules = {
 };
 const open = ref(false);
 
+function handleBefore() {
+  return false;
+}
+
 // 파일 저장 객체
 const fileList = ref(null);
-// 업로드할 파일을 선택하는 경우 발생하는 이벤트
-const handleChange =  (event) => {
-  fileList.value = event.target.files[0];
+
+const remove = ref({});
+
+// 관광지를 삭제하는 메서드, 현재 일자에 해당하는 동일한 관광지를 지워준다.
+const handleRemoveAttraction = (attraction, currentSlide, index) => {
+  console.log("remove in ScheduleWriteView", attraction, currentSlide,
+      days.value[currentSlide], index);
+  days.value[currentSlide].dayAttractions.splice(index, 1);
+  remove.value.slide = currentSlide;
+  remove.value.index = index;
+  remove.value.len = days.value[currentSlide].length;
+}
+
+const handleAddAttraction = (attraction) => {
+  console.log("addToList in ScheduleWriteView", attraction, dayAttractions, "days", currentSlide.value, days.value[currentSlide.value]);
+  /*
+  days : [
+    {
+      date: 2023-11-22,
+      dayAttractions : [
+        {
+          attractionId,..
+        }
+      ]
+     }
+  ]
+   */
+  let id = days.value[currentSlide.value].dayAttractions.length;
+  attraction.id = id;
+  days.value[currentSlide.value].dayAttractions.push(attraction);
+
+  goToAttraction.value = attraction;
+  console.log("dayday", days.value);
+}
+
+const handleMoveAttractionView = (val) => {
+  // currentSlide 값을 사용하여 작업을 수행합니다.
+  console.log(val);
+  currentSlide.value = val;
+  showAttractionView.value = true;
+};
+
+const handleMoveDayAttractionView = () => {
+  // currentSlide 값을 사용하여 작업을 수행합니다.
+  console.log(days.value);
+  showAttractionView.value = false;
 };
 
 const showDrawer = () => {
@@ -175,28 +184,39 @@ const post = async () => {
     // form의 유효성 검사
     await formRef.value.validate();
 
+    const token = localStorage.getItem("token");
+
+    if (token == null) {
+      await router.push({
+        name: 'login'
+      })
+      return;
+    }
+
     let formData = new FormData();
     let json = JSON.stringify(form);
     console.log("json", json);
 
     // 프로필 이미지 formData에 추가
-    formData.append('image', fileList.value);
-    console.log(fileList.value);
+    formData.append('image', fileList.value[0].originFileObj);
 
     // 일자에 있는 관광지, 메모들 form에 붙이기
     form.days = days.value.map(day => ({
       ...day,
-      dayAttractions: day.attractions,
+      dayAttractions: day.dayAttractions,
     }));
     console.log(days.value)
+
     // formData application/json 타입으로 붙이기
     formData.append('post', new Blob([JSON.stringify(form)], {type: 'application/json'}));
+
     console.log(formData);
     // 서버로 post요청
     await axios.post(`${server}/api/schedule`,
         formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
+            'X-AUTH-TOKEN': token,
           },
         }
     )
@@ -215,6 +235,30 @@ const post = async () => {
     message.error('모든 필드를 올바르게 입력해 주세요.');
   }
 };
+
+
+const generateDays = (start, end) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  let currentDate = startDate;
+  const days = [];
+
+  while (currentDate <= endDate) {
+    days.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return days.map(day => ({date: day, dayAttractions: [...dayAttractions]}));
+};
+
+const updateDatesFromQuery = () => {
+  startDate.value = route.query.startDate;
+  endDate.value = route.query.endDate;
+  console.log(startDate.value, endDate.value);
+  days.value = generateDays(startDate.value, endDate.value);
+  console.log("dayday", days.value);
+};
+
+onMounted(updateDatesFromQuery);
 </script>
 
 <style scoped>
@@ -236,4 +280,5 @@ const post = async () => {
   margin-top: 8px;
   color: #666;
 }
+
 </style>

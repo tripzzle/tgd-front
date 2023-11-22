@@ -8,8 +8,25 @@ const markers = ref([]);
 const props = defineProps({
   attraction: {
     type: Object
-  }
+  },
+  remove: {
+    type: Object
+  },
 })
+
+watch(
+    () => props.remove,
+    (newVal) => {
+      console.log("MapView : ", newVal);
+      const marker = {markers};
+      console.log(marker, markers.value[newVal.index].id, markers.value);
+      markers.value[newVal.index].setMap(null);
+      markers.value.splice(newVal?.index, 1);
+
+    },
+    {
+      deep: true
+    });
 
 watch(
     () => props.attraction,
@@ -30,6 +47,7 @@ watch(
       var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
 
       var marker = new kakao.maps.Marker({
+        id: props.attraction.id,
         position: moveLatLon, // 마커를 표시할 위치
         title: pos.title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됨.
         clickable: true, // // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
@@ -55,6 +73,7 @@ watch(
       console.log("마커", marker)
       console.log("마커 생성하기")
       positions.value.push(moveLatLon);
+      markers.value.push(marker);
     }
 )
 

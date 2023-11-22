@@ -15,6 +15,7 @@ import ScheduleList from "@/components/Mypage/components/MySchedule/ScheduleList
 
 <style scoped>
 .schedule {
+  margin-top: 65px;
   border: 2px solid #a385cf;
   border-radius: 5px;
   width: 500px;

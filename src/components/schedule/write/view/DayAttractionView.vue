@@ -16,7 +16,7 @@
     <transition :name="slideDirection" mode="out-in">
       <div :key="currentSlide" class="items">
         <div v-if="props.days.length > 0">
-          <div v-for="(attraction, index) in props.days[currentSlide].attractions" :key="attraction.attractionId"
+          <div v-for="(attraction, index) in props.days[currentSlide].dayAttractions" :key="attraction.attractionId"
                 style="padding: 10px">
             <DayAttractionDetail @deleteToList="deleteToList(attraction, index)" :item="attraction"/>
           </div>
@@ -33,8 +33,6 @@ const collapsed = ref(false);
 const dayAttractions = reactive([]);
 let currentSlide = ref(0);
 let slideDirection = ref('forward');
-
-
 
 const props = defineProps({
   days: {

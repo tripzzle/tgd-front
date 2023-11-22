@@ -1,7 +1,12 @@
-import {reactive, computed} from 'vue';
+import { reactive, computed } from 'vue';
+import { defineStore } from 'pinia';
 
 export const store = reactive({
   open: false,
-  list: [], // list를 reactive 객체 내부에 선언
+  list: [],
 });
 
+export const user = reactive({
+  isLogin: false,
+  token: localStorage.getItem("token"),
+});

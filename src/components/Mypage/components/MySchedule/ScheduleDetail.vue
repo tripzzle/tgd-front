@@ -1,10 +1,13 @@
 <script setup>
+import {defineProps} from "vue";
+
+const props = defineProps(["schedule"]);
 
 </script>
 
 <template>
   <div class="wishList">
-    asdas
+    {{schedule.title}}
   </div>
 </template>
 
@@ -17,7 +20,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px;
+  margin: 10px 40px;
   box-shadow: 2px 2px 5px 3px rgba(0,0,0,0.1);
 }
 </style>
