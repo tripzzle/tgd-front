@@ -42,7 +42,7 @@ async function  getUserInfo() {
           console.log(JSON.stringify("유저정보 서버에서 가죠옴 " +  JSON.stringify(response.data)))
           router.push({
             name: 'mypage',
-            query: {
+            params: {
               userInfo: JSON.stringify(response.data)
             }
           });
