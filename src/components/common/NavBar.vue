@@ -1,14 +1,15 @@
 <script setup>
-import { store } from "@/stores/store.js";
+import {store, user} from "@/stores/store.js";
 import DatePicker from "@/components/common/DatePicker.vue";
 import moment from "moment";
 import "moment/locale/ko";
 import locale from "ant-design-vue/es/locale/ko_KR";
-import { ConfigProvider } from "ant-design-vue";
-import { RouterLink } from "vue-router";
-import {onMounted, ref} from "vue";
+import {ConfigProvider} from "ant-design-vue";
+import {RouterLink} from "vue-router";
 import axios from "axios";
 import router from "@/router";
+import {onMounted} from "vue";
+
 const server = import.meta.env.VITE_SERVER;
 
 moment.locale('ko');  // Change this line
@@ -19,53 +20,22 @@ const openModal = () => {
   console.log("openModal");
 };
 
-function parseJwt(token) {
-  var base64Url = token.split('.')[1];
-  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
-
-  return JSON.parse(jsonPayload);
-};
-
-async function  getUserInfo() {
-  const token = localStorage.getItem("token");
-  if (token) {
-    console.log(token)
-    await axios.get(`${server}/api/user/mypage`, {
-      headers: {
-        'X-AUTH-TOKEN': token
-      }
-    })
-        .then(function (response) {
-          console.log(JSON.stringify("유저정보 서버에서 가죠옴 " +  JSON.stringify(response.data)))
-          router.push({
-            name: 'mypage',
-            params: {
-              userInfo: JSON.stringify(response.data)
-            }
-          });
-        })
-        .catch(function (error) {
-          console.log("!!! : " + error);
-        });
-  }
-}
-
-const isLoggedIn = ref(false); // 로그인 여부를 저장하는 변수
 const logout = () => {
-  localStorage.removeItem("token");
-  isLoggedIn.value = false
+  user.isLogin = false;
+  user.token = null;
   router.push({
-    name:"main"
+    name: "main"
   })
 };
-
 onMounted(() => {
-  // Authorization 쿠키 유무에 따라 로그인 여부 설정
-  isLoggedIn.value = localStorage.getItem("token");
-});
+
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    user.isLogin = true;
+    user.token = token;
+  }
+})
 </script>
 <template>
   <a-layout id="components-layout">
@@ -76,10 +46,12 @@ onMounted(() => {
         </router-link>
       </div>
       <div class="nav-right">
-        <div v-if="isLoggedIn">
+        <div v-if="user.isLogin">
           <a-button class="custom-button" @click="logout">로그아웃</a-button>
           |
-          <a-button class="custom-button" @click="getUserInfo">마이페이지</a-button>
+          <RouterLink :to="{name: 'mypage'}">
+            <a-button class="custom-button">마이페이지</a-button>
+          </RouterLink>
         </div>
         <div v-else>
           <router-link :to="{ name: 'login' }">
