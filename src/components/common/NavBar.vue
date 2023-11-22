@@ -8,6 +8,8 @@ import { ConfigProvider } from "ant-design-vue";
 import { RouterLink } from "vue-router";
 import {onMounted, ref} from "vue";
 import axios from "axios";
+import router from "@/router";
+const server = import.meta.env.VITE_SERVER;
 
 moment.locale('ko');  // Change this line
 
@@ -15,23 +17,6 @@ const openModal = () => {
   console.log(store);
   store.open = true;
   console.log("openModal");
-};
-
-const getCookie = (key) => {
-//쿠키는 한번에 모두 불러와지기 때문에 사용할때 ';'나눠서 선택적으로 가져와야한다.
-  const cookies = document.cookie.split(`; `).map((el) => el.split('='));
-  let getItem = [];
-
-  for (let i = 0; i < cookies.length; i++) {
-    if (cookies[i][0] === key) {
-      getItem.push(cookies[i][1]);
-      break;
-    }
-  }
-
-  if (getItem.length > 0) {
-    return getItem[0];
-  }
 };
 
 function parseJwt(token) {
@@ -45,39 +30,41 @@ function parseJwt(token) {
 };
 
 async function  getUserInfo() {
-  const token = getCookie("Authorization");
+  const token = localStorage.getItem("token");
   if (token) {
-    // 토큰이 있으면 로그인 처리
-    var decoded = parseJwt(token);
-
-    await axios.get(`http://localhost:8080/api/user/mypage?userId=${decoded.sub}`, {
+    console.log(token)
+    await axios.get(`${server}/api/user/mypage`, {
       headers: {
         'X-AUTH-TOKEN': token
       }
     })
         .then(function (response) {
+          console.log(JSON.stringify("유저정보 서버에서 가죠옴 " +  JSON.stringify(response.data)))
           router.push({
             name: 'mypage',
-            query: {
-              npm: JSON.stringify(response.data)
+            params: {
+              userInfo: JSON.stringify(response.data)
             }
           });
         })
         .catch(function (error) {
-          console.log(error);
+          console.log("!!! : " + error);
         });
   }
 }
 
 const isLoggedIn = ref(false); // 로그인 여부를 저장하는 변수
 const logout = () => {
-  document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  localStorage.removeItem("token");
   isLoggedIn.value = false
+  router.push({
+    name:"main"
+  })
 };
 
 onMounted(() => {
   // Authorization 쿠키 유무에 따라 로그인 여부 설정
-  isLoggedIn.value = document.cookie.includes("Authorization");
+  isLoggedIn.value = localStorage.getItem("token");
 });
 </script>
 <template>

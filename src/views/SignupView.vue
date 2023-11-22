@@ -1,5 +1,5 @@
 <script setup>
-import {ref} from 'vue';
+import {computed, ref, toRefs} from 'vue';
 import {useRoute, useRouter} from "vue-router";
 import axios from "axios";
 const server = import.meta.env.VITE_SERVER;
@@ -8,25 +8,11 @@ const route = useRoute();
 const router = useRouter();
 
 const userInfo = ref(JSON.parse(route.query.userInfo));
-const keys = Object.keys(userInfo.value);
+const { nickName, birth, sex } = toRefs(userInfo.value);
 
-//쿠키에 있는 토큰값 가져오고 디코딩
-const getCookie = (key) => {
-//쿠키는 한번에 모두 불러와지기 때문에 사용할때 ';'나눠서 선택적으로 가져와야한다.
-  const cookies = document.cookie.split(`; `).map((el) => el.split('='));
-  let getItem = [];
-
-  for (let i = 0; i < cookies.length; i++) {
-    if (cookies[i][0] === key) {
-      getItem.push(cookies[i][1]);
-      break;
-    }
-  }
-
-  if (getItem.length > 0) {
-    return getItem[0];
-  }
-};
+const isFormIncomplete = computed(() => {
+  return !(nickName.value && birth.value && sex.value !== null);
+});
 
 //파일 업로드
 const fileList = ref(null);
@@ -34,13 +20,15 @@ const handleFileUpload = (event) => {
   fileList.value = event.target.files[0];
 };
 const signup = async () => {
-  let token = getCookie("Authorization");
+  const token = localStorage.getItem("token");
   // 파일 첨부
   let formData = new FormData();
 
 // 프로필 이미지 formData에 추가
   formData.append('file', fileList.value);
+
   formData.append('userInfo', new Blob([JSON.stringify(userInfo.value)], {type:'application/json'}));
+
 
   await axios.post(`${server}/api/user/signup`,
       formData, {
@@ -52,7 +40,7 @@ const signup = async () => {
   )
       .then(response => {
         const newToken = response.data;
-        document.cookie = `Authorization=${newToken}`;
+        localStorage.setItem("token", newToken);
         router.push({name: "main"})
       })
       .catch(error => {
@@ -92,7 +80,7 @@ const signup = async () => {
     </div>
   </div>
   <div class="submit-button">
-    <a-button type="primary" size="large" @click="signup">회원가입</a-button>
+    <a-button type="primary" size="large" @click="signup" :disabled="isFormIncomplete">회원가입</a-button>
   </div>
 </template>
 

@@ -4,7 +4,7 @@
     <div class="card-content">
       <h3>{{ item.title }}</h3>
       <div class="button-box">
-        <button @click="deleteToList">x</button>
+        <a-button icon="" @click="deleteToList">x</a-button>
       </div>
     </div>
   </div>

@@ -42,16 +42,18 @@ function parseJwt(token) {
   return JSON.parse(jsonPayload);
 };
 
+onMounted(async() => {
+  const param = new URLSearchParams(window.location.search);
+  const token = param.get("Authorization");
 
- onMounted(async() => {
-  // 페이지에 접근했을 때 쿠키 확인
-  let token = getCookie("Authorization");
+  localStorage.setItem("token", token);
+
   if (token) {
     // 토큰이 있으면 로그인 처리
     var decoded = parseJwt(token);
 
     if (decoded.roles && decoded.roles.length === 1) {
-      await axios.get(`${server}/api/user/signup?userId=${decoded.sub}`, {
+      await axios.get(`${server}/api/user/signup`, {
         headers: {
           'X-AUTH-TOKEN': token
         }
