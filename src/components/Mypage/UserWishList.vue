@@ -40,7 +40,7 @@ const handleScheduleClick = () => {
 .wishList {
   border: 2px solid #a385cf;
   border-radius: 5px;
-  width: 600px;
+  width: 700px;
   padding: 10px;
   display: flex;
   justify-content: space-between;

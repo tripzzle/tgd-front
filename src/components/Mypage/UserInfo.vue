@@ -72,6 +72,7 @@ const userUpdate = async () => {
       });
 }
 
+//유저정보삭제
 const userDelete = async () => {
 
   let formData = new FormData();
@@ -99,6 +100,7 @@ const userDelete = async () => {
       });
 }
 
+//유저정보 조회
 onMounted(async () => {
   if (user.token) {
     try {
