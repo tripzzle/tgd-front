@@ -2,7 +2,7 @@
   <div style="padding: 10px">
     <a-row span="6">
       <a-col span="24">
-        <div v-for="item in attractions" :key="item.attractionId" align="center">
+        <div v-for="item in dayAttractions" :key="item.attractionId" align="center">
           <AttractionDetail :item="item" @addToList="addToList(item)" @click="openModal(item)" class="list"/>
         </div>
       </a-col>
@@ -35,11 +35,11 @@ const addToList = (item) => {
 }
 
 const props = defineProps({
-  attractions: Object
+  dayAttractions: Object
 });
 
-const attractions = computed(() => {
-  return props.attractions ? props.attractions : localAttractions.value;
+const dayAttractions = computed(() => {
+  return props.dayAttractions ? props.dayAttractions : localAttractions.value;
 });
 
 const openModal = (item) => {

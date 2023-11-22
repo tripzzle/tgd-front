@@ -1,5 +1,5 @@
 <template>
-  <a-row :gutter="[30, 80]">
+  <a-row :gutter="[0, 80]" align="center">
     <Card class="result" v-for="(item, index) in items" :key="index" :item="item"/>
   </a-row>
   <InfiniteLoading @infinite="load" align="center"/>
@@ -46,7 +46,11 @@ const load = async $state => {
         console.log("try data", data);
         console.log("pageInfo", pageInfo);
 
-        if (data.length < 10) $state.complete();
+        if(pageInfo.page < page){
+          $state.complete()
+        }
+
+        // if (data.length < 10) $state.complete();
         else {
           console.log("data", data);
           console.log("items", items.value);
