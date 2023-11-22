@@ -12,7 +12,7 @@
         </a-col>
         <SidoOption @update="onUpdateOption"/>
       </a-row>
-      <AttractionCardList :attractions="searchResult" @add-to-list="addToList"/>
+      <AttractionCardList :dayAttractions="searchResult" @add-to-list="addToList"/>
       <InfiniteLoading @infinite="load" align="center"/>
     </a-menu>
   </a-layout>

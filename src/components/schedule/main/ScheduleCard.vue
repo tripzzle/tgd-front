@@ -13,7 +13,7 @@
           </template>
           <a-card-meta :title="item.title" :description="item.content">
             <template #avatar>
-              <a-avatar :src="item.imgUrl"/>
+              <a-avatar :src="item?.user.imgUrl"/>
               <!-- imgUrl이 없을 경우 기본 이미지 URL 사용 -->
             </template>
           </a-card-meta>

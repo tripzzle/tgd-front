@@ -12,5 +12,11 @@ export default {
     },
     deleteCommentById: (scheduleId, commentId) => {
         return `${server}/api/schedule/${scheduleId}/comment/${commentId}`;
+    },
+    postWishByScheduleId: (scheduleId) =>{
+        return `${server}/api/schedule/${scheduleId}/wish`
+    },
+    postLikeByScheduleId: (scheduleId) =>{
+        return `${server}/api/schedule/${scheduleId}/like`
     }
 }

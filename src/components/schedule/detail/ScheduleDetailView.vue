@@ -1,6 +1,5 @@
 <template>
   <a-divider/>
-  <a-divider/>
 
   <div class="components-page-header-demo-content">
     <a-page-header
@@ -19,28 +18,34 @@
         </div>
       </template>
       <a-row class="content">
-        <div style="flex: 1">
-          <p>
-            {{ schedule?.content }}
-          </p>
-          <div>
+        <a-col>
+          <a-image :src="schedule?.imgUrl" alt=""/>
+          <div style="flex: 1">
+            <p>
+              {{ schedule?.content }}
+            </p>
+            <div>
+            </div>
           </div>
-        </div>
-        <a-card hoverable style="width: 240px">
-          <template #cover>
-            <img alt="example" :src="schedule?.imgUrl"/>
-          </template>
-          <a-card-meta title="Europe Street beat">
-            <template #description>www.instagram.com</template>
-          </a-card-meta>
-        </a-card>
+        </a-col>
       </a-row>
       <a-button @click="handleButtonClick">상세 일정 보기</a-button>
-      <span v-for="{ icon, text } in actions" :key="icon">
-            <component :is="icon" style="margin-left: 10px"/>
-            {{ text }} <span></span>
-          </span>
-      <h2> 댓글 </h2>
+      <a-row align="center">
+        <a-space size="large">
+          <a-button @click="handleLike">
+            <LikeOutlined/>
+            {{ likeCount }}
+          </a-button>
+          <a-button @click="handleWish">
+            <StarFilled/>
+            {{ wishCount }}
+          </a-button>
+        </a-space>
+      </a-row>
+      <h2>
+        <MessageOutlined/>
+        {{ commentsLength }}
+      </h2>
       <a-divider/>
 
       <a-list v-if="comments.length"
@@ -76,7 +81,14 @@ import API from '@/components/schedule/detail/api/api'
 import axios from "axios";
 import {useRoute, useRouter} from 'vue-router';
 import CommentView from "@/components/schedule/detail/CommentView.vue";
-import {StarOutlined, LikeOutlined, MessageOutlined, LockOutlined, UnlockOutlined} from '@ant-design/icons-vue';
+import {
+  StarOutlined,
+  LikeOutlined,
+  MessageOutlined,
+  LockOutlined,
+  UnlockOutlined,
+  StarFilled
+} from '@ant-design/icons-vue';
 
 const id = ref(null);
 const schedule = ref();
@@ -92,24 +104,49 @@ const value = ref('');
 const likeCount = ref();
 const wishCount = ref();
 
+const handleLike = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("로그인이 필요한 서비스입니다.");
+    return;
+  }
+
+  await axios.post(API.postLikeByScheduleId(id.value), {},
+      {
+        headers: {
+          'X-AUTH-TOKEN': token,
+        }
+      }).then(() => {
+    likeCount.value += 1;
+  }).catch(error => {
+    // 요청이 실패했을 때의 동작
+    console.error(error);
+  });
+}
+
+const handleWish = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("로그인이 필요한 서비스입니다.");
+    return;
+  }
+
+  await axios.post(API.postWishByScheduleId(id.value), {},
+      {
+        headers: {
+          'X-AUTH-TOKEN': token,
+        }
+      }).then(() => {
+    wishCount.value += 1;
+  }).catch(error => {
+    // 요청이 실패했을 때의 동작
+    console.error(error);
+  });
+}
+
 watch(comments, () => {
   commentsLength.value = comments.value.length;
 })
-
-const actions = ref([
-  {
-    icon: StarOutlined,
-    text: wishCount.value ? wishCount.value : 0,
-  },
-  {
-    icon: LikeOutlined,
-    text: likeCount.value ? likeCount.value : 0,
-  },
-  {
-    icon: MessageOutlined,
-    text: commentsLength
-  },
-]);
 
 const handleSubmit = () => {
   if (!value.value) {
@@ -167,6 +204,10 @@ onMounted(
         console.log(dayResponse.value[0]);
         startDate.value = dayResponse.value[0]?.date;
         endDate.value = dayResponse.value[dayResponse.value.length - 1]?.date;
+        wishCount.value = data.wishCount;
+        likeCount.value = data.likeCount;
+
+        console.log("asf", likeCount.value)
         console.log("dayResponse in ScheduleDetailView", dayResponse.value);
       });
 
@@ -186,3 +227,10 @@ const getComments = async () => {
       });
 }
 </script>
+
+<style scoped>
+.components-page-header-demo-content {
+  margin: 0px 300px;
+}
+
+</style>
