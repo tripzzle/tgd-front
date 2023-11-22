@@ -28,7 +28,7 @@
         </div>
         <a-card hoverable style="width: 240px">
           <template #cover>
-            <img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"/>
+            <img alt="example" :src="schedule?.imgUrl"/>
           </template>
           <a-card-meta title="Europe Street beat">
             <template #description>www.instagram.com</template>

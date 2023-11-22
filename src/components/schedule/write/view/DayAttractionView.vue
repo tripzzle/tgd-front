@@ -34,8 +34,6 @@ const dayAttractions = reactive([]);
 let currentSlide = ref(0);
 let slideDirection = ref('forward');
 
-
-
 const props = defineProps({
   days: {
     type: Array,

@@ -2,7 +2,7 @@
   <a-row :gutter="[30, 80]">
     <Card class="result" v-for="(item, index) in items" :key="index" :item="item"/>
   </a-row>
-  <InfiniteLoading @infinite="load"/>
+  <InfiniteLoading @infinite="load" align="center"/>
 </template>
 
 <script setup>
@@ -96,5 +96,4 @@ onMounted(async () => {
   background: #eceef0;
   border-radius: 10px;
 }
-
 </style>

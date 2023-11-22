@@ -2,7 +2,7 @@
   <a-comment>
     <template #author><a>{{ comment?.writer?.nickname }}</a></template>
     <template #avatar>
-      <a-avatar :src="comment?.writer.imgUrl" alt="Han Solo"/>
+      <a-avatar :src="comment?.writer?.imgUrl" alt="Han Solo"/>
     </template>
     <template #content>
       <p>
