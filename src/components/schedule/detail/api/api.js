@@ -4,4 +4,11 @@ export default {
     getScheduleDetailById: (scheduleId) => {
         return `${server}/api/schedule/${scheduleId}`;
     },
+    getCommentsByScheduleId: (scheduleId) => {
+        return `${server}/api/schedule/${scheduleId}/comment`;
+    },
+
+    postCommentsByScheduleId: (scheduleId) => {
+        return `${server}/api/schedule/${scheduleId}/comment`;
+    }
 }

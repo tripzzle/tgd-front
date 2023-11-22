@@ -94,7 +94,7 @@ img {
 }
 
 .flip-card-back {
-  background-color: #ddd;
+  background-color: #e8ddf5;
   color: black;
   transform: rotateY(180deg);
   display: flex;
