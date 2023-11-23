@@ -184,9 +184,8 @@ const handleButtonClick = () => {
   console.log("버튼 누름", dayResponse.value, startDate.value, endDate.value);
 
   router.push({
-    name: 'schedule',
+    name: 'dayDetail',
     params: {id: id.value},
-    query: {startDate: startDate.value, endDate: endDate.value, type: true}
   });
 }
 
