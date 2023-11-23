@@ -49,14 +49,14 @@ onMounted(async () => {
 
 .result::-webkit-scrollbar {
   width: 0.8em; /* 스크롤바 너비 */
-  background-color: transparent; /* 스크롤바 배경색 */
+  background-color: #a385cf; /* 스크롤바 배경색 */
 }
 
 .result::-webkit-scrollbar-thumb {
-  background-color: transparent; /* 스크롤바 색상 */
+  background-color: white; /* 스크롤바 색상 */
 }
 
 .result::-webkit-scrollbar-track {
-  background-color: transparent; /* 스크롤바 트랙 배경색 */
+  background-color: white; /* 스크롤바 트랙 배경색 */
 }
 </style>

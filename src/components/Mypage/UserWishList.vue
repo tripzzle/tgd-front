@@ -1,7 +1,7 @@
 <script setup>
 import AttractionWishList from "@/components/Mypage/components/WishAttraction/AttractionWishList.vue";
 import SchedulWishList from "@/components/Mypage/components/WishSchedule/SchedulWishList.vue";
-import {ref} from "vue";
+import { ref } from "vue";
 
 const wish = ref(false);
 
@@ -27,7 +27,7 @@ const handleScheduleClick = () => {
           <a-button class="custom-button" @click="handleScheduleClick">여행기록</a-button>
         </div>
       </div>
-      <a-col>
+      <a-col class="center-container">
         <AttractionWishList v-if="wish" />
         <SchedulWishList v-else />
       </a-col>
@@ -47,9 +47,7 @@ const handleScheduleClick = () => {
   align-items: center;
   box-shadow: 2px 2px 5px 3px rgba(0, 0, 0, 0.13);
   background-color: #fffdfd;
-
 }
-
 
 .header {
   display: flex;
@@ -62,14 +60,19 @@ const handleScheduleClick = () => {
   align-items: center;
 }
 
-
 .custom-button {
   border: none !important;
   box-shadow: none !important;
-  color: #a385cf ;
+  color: #a385cf;
 }
 
-h2{
+h2 {
   margin-left: 220px;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

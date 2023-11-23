@@ -1,5 +1,5 @@
 <template>
-  <div style="padding: 10px">
+  <div style="padding: 10px; height: 530px">
     <a-row span="6">
       <a-col span="24">
         <div v-for="item in dayAttractions" :key="item.attractionId" align="center">

@@ -6,7 +6,7 @@ import ScheduleList from "@/components/Mypage/components/MySchedule/ScheduleList
   <div class="schedule">
     <div class="title">
       <h2>
-        관광지 목록
+        일정 목록
       </h2>
       <ScheduleList/>
     </div>
