@@ -46,7 +46,7 @@ const load = async $state => {
         console.log("try data", data);
         console.log("pageInfo", pageInfo);
 
-        if(pageInfo.page < page){
+        if(pageInfo.page < page || pageInfo.totalSize === 0){
           $state.complete()
         }
 
