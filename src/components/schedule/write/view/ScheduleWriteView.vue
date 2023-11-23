@@ -272,6 +272,7 @@ const makerList = ref();
 const moveMaker = (atr)  =>{
   makerList.value = atr;
   console.log(makerList.value)
+  
 }
 
 onMounted(updateDatesFromQuery);

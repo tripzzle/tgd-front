@@ -20,7 +20,7 @@ const handleFileUpload = (event) => {
 
 // 유저 성별 리턴
 function sex() {
-  return userInfo.value.sex ? "여성" : "남성";
+  return !userInfo.value.sex ? "여성" : "남성";
 }
 
 // 모달 관련
