@@ -6,7 +6,7 @@
           <AttractionDetail :item="item" @addToList="addToList(item)" @click="openModal(item)" class="list"/>
         </div>
       </a-col>
-      <a-pagination :current="current" :total="curTotal" show-less-items @change="change" size="small"/>
+      <a-pagination :current="current" :total="curTotal" show-less-items :show-size-changer="false" @change="change" size="small"/>
     </a-row>
     <AttractionDetailModal :open="open" :item="selectedAttraction" @close="closeModal"/>
   </div>
@@ -83,4 +83,11 @@ onMounted(async () => {
 .list {
   margin-bottom: 20px;
 }
+.ant-pagination-options{
+  display: none !important;
+}
+.ant-select-selector{
+  display: none !important;
+}
+
 </style>
