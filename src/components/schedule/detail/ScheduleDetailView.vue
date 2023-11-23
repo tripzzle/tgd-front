@@ -82,7 +82,6 @@ import axios from "axios";
 import {useRoute, useRouter} from 'vue-router';
 import CommentView from "@/components/schedule/detail/CommentView.vue";
 import {
-  StarOutlined,
   LikeOutlined,
   MessageOutlined,
   LockOutlined,
