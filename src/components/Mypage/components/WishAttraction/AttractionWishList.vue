@@ -45,8 +45,9 @@ onMounted(async () => {
   flex-direction: column;
   gap: 5px;
   font-weight: 300;
-  width: 400px;
-  padding: 10px;
+  width: 600px;
+  height: 355px;
+  padding: 30px;
   text-align: center;
   justify-items: center;
   margin: 0 auto 10px auto;
@@ -56,8 +57,9 @@ onMounted(async () => {
 }
 
 .schedule-card-container {
+  margin-left: 100px;
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 5px;
   /* overflow-x: scroll; */ /* 좌우 스크롤 생성 */
   scroll-snap-type: x mandatory; /* 좌우 스크롤 스냅 설정 */
@@ -65,15 +67,15 @@ onMounted(async () => {
 }
 
 .result::-webkit-scrollbar {
-  width: 0.8em; /* 스크롤바 너비 */
-  background-color: transparent; /* 스크롤바 배경색 */
+  width: 0.0em; /* 스크롤바 너비 */
+  background-color: #a385cf; /* 스크롤바 배경색 */
 }
 
 .result::-webkit-scrollbar-thumb {
-  background-color: transparent; /* 스크롤바 색상 */
+  background-color: white; /* 스크롤바 색상 */
 }
 
 .result::-webkit-scrollbar-track {
-  background-color: transparent; /* 스크롤바 트랙 배경색 */
+  background-color: white; /* 스크롤바 트랙 배경색 */
 }
 </style>

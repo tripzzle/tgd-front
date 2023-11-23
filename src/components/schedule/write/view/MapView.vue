@@ -1,10 +1,12 @@
 <script setup>
-import {ref, watch, onMounted} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {markerImg} from "@/assets/js/marker.js"
 
 var map;
 const positions = ref([]);
 const markers = ref([]);
+const polylines = ref([]);
+
 const props = defineProps({
   attraction: {
     type: Object
@@ -12,7 +14,63 @@ const props = defineProps({
   remove: {
     type: Object
   },
+  pos: {
+    type: Array
+  }
 })
+
+
+// 기존 마커들을 모두 제거하는 함수
+const removeMarkers = () => {
+  markers.value.forEach(marker => {
+    marker.setMap(null); // 지도에서 마커 제거
+  });
+  markers.value = []; // 배열 초기화
+};
+
+const removePolyline = () => {
+  polylines.value.forEach(polyline => {
+    polyline.setMap(null); // 지도에서 마커 제거
+
+    map.relayout();
+  });
+  polylines.value = []; // 배열 초기화
+
+
+
+};
+
+
+
+// Watcher를 사용하여 newPositions 값이 변경될 때마다 마커를 업데이트
+watch(() => props.pos,
+    (newVal) => {
+      removeMarkers(); // 기존 마커들 제거
+      var imageSrc = markerImg, // 마커이미지의 주소입니다
+          imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
+          imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+// 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
+      // 새로운 마커를 찍기 위해 배열을 순회하면서 마커 생성 및 설정
+      newVal.forEach(position => {
+        const marker = new kakao.maps.Marker({
+          id: position.attraction_id,
+          position: new kakao.maps.LatLng(position.latitude, position.longitude), // 좌표값 설정
+          title: position.title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됨.
+          clickable: true, // // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+          image: markerImage // 마커이미지 설정
+        });
+
+        marker.setMap(map);
+        markers.value.push(marker); // 생성된 마커 객체를 배열에 저장
+      });
+
+      removePolyline();
+    }, {
+      deep: true
+    });
 
 watch(
     () => props.remove,
@@ -94,7 +152,7 @@ watch(
 
       // 지도에 선을 표시합니다
       polyline.setMap(map);
-
+      polylines.value.push(polyline);
       // 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
       var bounds = new kakao.maps.LatLngBounds();
 
@@ -194,6 +252,7 @@ const initMap = () => {
 <style>
 #map {
   width: 100%;
-  height: 700px;
+  height: auto;
+  margin-left: 20px;
 }
 </style>
