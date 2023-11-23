@@ -82,7 +82,6 @@ import axios from "axios";
 import {useRoute, useRouter} from 'vue-router';
 import CommentView from "@/components/schedule/detail/CommentView.vue";
 import {
-  StarOutlined,
   LikeOutlined,
   MessageOutlined,
   LockOutlined,
@@ -181,11 +180,9 @@ const handleSubmit = () => {
 };
 
 const handleButtonClick = () => {
-  console.log("버튼 누름", dayResponse.value, startDate.value, endDate.value);
-
   router.push({
     name: 'dayDetail',
-    params: {id: id.value},
+    params: {id: route.params.id},
   });
 }
 

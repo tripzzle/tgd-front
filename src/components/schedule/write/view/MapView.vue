@@ -6,9 +6,15 @@ var map;
 const positions = ref([]);
 const markers = ref([]);
 const polylines = ref([]);
+const positionsForRead = ref([]);
+const markersForRead = ref([]);
+const polylinesForRead = ref([]);
 
 const props = defineProps({
   attraction: {
+    type: Object
+  },
+  attractionForRead: {
     type: Object
   },
   remove: {
@@ -16,9 +22,117 @@ const props = defineProps({
   },
   pos: {
     type: Array
-  }
+  },
 })
 
+watch(() => props.attractionForRead,
+    (value) => {
+      positionsForRead.value = value.attractions.map(attraction => {
+        return {
+          latitude: attraction.latitude,
+          longitude: attraction.longitude
+        };
+      });
+      console.log("상세 읽기용 attraction: ", value, value.attractions, positionsForRead.value);
+    }
+);
+
+watch(() => positionsForRead,
+    (value) => {
+      console.log("지도 positions",);
+    }
+);
+
+const removeMarkersForRead = () => {
+  markers.value.forEach(marker => {
+    marker.setMap(null); // 지도에서 마커 제거
+  });
+  markers.value = []; // 배열 초기화
+};
+
+const removePolylineForRead = () => {
+  polylines.value.forEach(polyline => {
+    polyline.setMap(null); // 지도에서 마커 제거
+
+  });
+  polylines.value = []; // 배열 초기화
+};
+
+// Watcher를 사용하여 newPositions 값이 변경될 때마다 마커를 업데이트
+watch(() => positionsForRead,
+    (newVal) => {
+      removeMarkersForRead(); // 기존 마커들 제거
+      removePolylineForRead();
+
+      console.log(newVal.value);
+      positions.value = [];
+
+      var imageSrc = markerImg, // 마커이미지의 주소입니다
+          imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
+          imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+      // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+      var decimal = `rgb(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255})`;
+      var rgb = decimal.replace(/[^%,.\d]/g, "").split(",");
+
+      rgb.forEach(function (str, x, arr) {
+
+        /* 컬러값이 "%"일 경우, 변환하기. */
+        if (str.indexOf("%") > -1) str = Math.round(parseFloat(str) * 2.55);
+
+        /* 16진수 문자로 변환하기. */
+        str = parseInt(str, 10).toString(16);
+        if (str.length === 1) str = "0" + str;
+
+        arr[x] = str;
+      });
+
+      const color = "#" + rgb.join("");
+
+      // 새로운 마커를 찍기 위해 배열을 순회하면서 마커 생성 및 설정
+      newVal.value.forEach(position => {
+        var moveLatLon = new kakao.maps.LatLng(position.latitude, position.longitude);
+
+        const marker = new kakao.maps.Marker({
+          id: position.attraction_id,
+          position: new kakao.maps.LatLng(position.latitude, position.longitude), // 좌표값 설정
+          title: position.title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됨.
+          clickable: true, // // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+          image: markerImage // 마커이미지 설정
+        });
+
+        marker.setMap(map);
+        markers.value.push(marker); // 생성된 마커 객체를 배열에 저장
+        positions.value.push(moveLatLon);
+
+        // 지도에 표시할 선을 생성합니다
+        var polyline = new kakao.maps.Polyline({
+          path: positions.value, // 선을 구성하는 좌표배열 입니다
+          strokeWeight: 5, // 선의 두께 입니다
+          strokeColor: `${color}`, // 선의 색깔입니다
+          strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+          strokeStyle: 'solid' // 선의 스타일입니다
+        });
+
+        // 지도에 선을 표시합니다
+        polyline.setMap(map);
+        polylines.value.push(polyline);
+        // 지도를 재설정할 범위정보를 가지고 있을 LatLngBounds 객체를 생성합니다
+        var bounds = new kakao.maps.LatLngBounds();
+
+        var i;
+        for (i = 0; i < positions.value.length; i++) {
+          // LatLngBounds 객체에 좌표를 추가합니다
+          bounds.extend(positions.value[i]);
+        }
+
+        map.setBounds(bounds);
+      })
+
+    }, {
+      deep: true
+    });
 
 // 기존 마커들을 모두 제거하는 함수
 const removeMarkers = () => {
@@ -35,7 +149,6 @@ const removePolyline = () => {
   });
   polylines.value = []; // 배열 초기화
 };
-
 
 
 // Watcher를 사용하여 newPositions 값이 변경될 때마다 마커를 업데이트
@@ -169,7 +282,7 @@ watch(
     (pos) => {
       console.log("position에 ", pos);
 
-      if(pos.length === 0){
+      if (pos.length === 0) {
         return
       }
       // 지도에 표시할 선을 생성합니다
@@ -202,6 +315,7 @@ watch(
     }
 )
 
+
 onMounted(() => {
   if (window.kakao && window.kakao.maps) {
     initMap();
@@ -231,49 +345,7 @@ const initMap = () => {
   map.setCopyrightPosition(kakao.maps.CopyrightPosition.BOTTOMRIGHT, true);
   // 키보드로 지도를 조작할 수 없도록 설정한다
   map.setKeyboardShortcuts(true);
-
-
-  // loadMarkers();
 };
-
-// const loadMarkers = () => {
-//   // 현재 표시되어있는 marker들이 있다면 map에 등록된 marker를 제거한다.
-//   deleteMarkers();
-//
-//   // 마커 이미지를 생성합니다
-//   //   const imgSrc = require("@/assets/map/markerStar.png");
-//   // 마커 이미지의 이미지 크기 입니다
-//   //   const imgSize = new kakao.maps.Size(24, 35);
-//   //   const markerImage = new kakao.maps.MarkerImage(imgSrc, imgSize);
-//
-//   // 마커를 생성합니다
-//   markers.value = [];
-//   positions.value.forEach((position) => {
-//     const marker = new kakao.maps.Marker({
-//       map: map, // 마커를 표시할 지도
-//       position: position.latlng, // 마커를 표시할 위치
-//       title: position.title, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됨.
-//       clickable: true, // // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
-//       // image: markerImage, // 마커의 이미지
-//     });
-//     markers.value.push(marker);
-//   });
-//
-//   // 4. 지도를 이동시켜주기
-//   // 배열.reduce( (누적값, 현재값, 인덱스, 요소)=>{ return 결과값}, 초기값);
-//   const bounds = positions.value.reduce(
-//       (bounds, position) => bounds.extend(position.latlng),
-//       new kakao.maps.LatLngBounds()
-//   );
-//
-//   map.setBounds(bounds);
-// };
-//
-// const deleteMarkers = () => {
-//   if (markers.value.length > 0) {
-//     markers.value.forEach((marker) => marker.setMap(null));
-//   }
-// };
 </script>
 
 <template>
