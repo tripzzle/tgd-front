@@ -37,11 +37,12 @@ onMounted(async () => {
   flex-direction: column;
   gap: 5px;
   font-weight: 300;
-  width: 400px;
+  width: 500px;
+  height: 360px;
   padding: 10px;
+  margin-left: 80px;
   text-align: center;
   justify-items: center;
-  margin: 0 auto 10px auto;
   border-radius: 10px;
   overflow-y: auto; /* 상하 스크롤 생성 */
   max-height: 550px;
@@ -57,15 +58,15 @@ onMounted(async () => {
 }
 
 .result::-webkit-scrollbar {
-  width: 0.8em; /* 스크롤바 너비 */
-  background-color: transparent; /* 스크롤바 배경색 */
+  width: 0.0em; /* 스크롤바 너비 */
+  background-color: #a385cf; /* 스크롤바 배경색 */
 }
 
 .result::-webkit-scrollbar-thumb {
-  background-color: transparent; /* 스크롤바 색상 */
+  background-color: white; /* 스크롤바 색상 */
 }
 
 .result::-webkit-scrollbar-track {
-  background-color: transparent; /* 스크롤바 트랙 배경색 */
+  background-color: white; /* 스크롤바 트랙 배경색 */
 }
 </style>

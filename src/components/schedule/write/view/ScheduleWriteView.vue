@@ -1,15 +1,23 @@
 <template>
-  <a-flex class="space" gap="large">
-    <AttractionView v-if="showAttractionView" @goBack="handleMoveDayAttractionView"
-                    @add-to-list="handleAddAttraction"/>
-    <DayAttractionView v-if="!showAttractionView" :slide="currentSlide" :days="days"
-                       @moveAttractionView="handleMoveAttractionView"
-                       @removeAttraction="handleRemoveAttraction" @delete-to-list="handleRemoveAttraction"/>
-    <MapView :attraction="goToAttraction" :remove="remove"/>
+  <a-flex class="space" gap="small">
+    <a-row class="container">
+      <AttractionView v-if="showAttractionView" @goBack="handleMoveDayAttractionView"
+                      @add-to-list="handleAddAttraction"/>
+      <DayAttractionView v-if="!showAttractionView"
+                         :slide="currentSlide" :days="days"
+                         @moveAttractionView="handleMoveAttractionView"
+                         @removeAttraction="handleRemoveAttraction"
+                         @delete-to-list="handleRemoveAttraction"
+                          @moveMaker="moveMaker"
+      />
+      <a-button class="custom-button" type="default" @click="showDrawer">
+        일정 만들기
+      </a-button>
+    </a-row>
+
+    <MapView :attraction="goToAttraction" :remove="remove" :pos="makerList"/>
   </a-flex>
-  <a-button type="default" @click="showDrawer" style="width: 100%">
-    일정 만들기
-  </a-button>
+
   <a-drawer
       title="추가 일정 정보를 입력하세요"
       :width="720"
@@ -162,6 +170,7 @@ const handleMoveAttractionView = (val) => {
   console.log(val);
   currentSlide.value = val;
   showAttractionView.value = true;
+
 };
 
 const handleMoveDayAttractionView = () => {
@@ -258,12 +267,29 @@ const updateDatesFromQuery = () => {
   console.log("dayday", days.value);
 };
 
+const makerList = ref();
+
+const moveMaker = (atr)  =>{
+  makerList.value = atr;
+  console.log(makerList.value)
+}
+
 onMounted(updateDatesFromQuery);
 </script>
 
 <style scoped>
+
 .space {
-  margin: 60px 20px;
+  height: 700px;
+  margin-top: 60px;
+  margin-left: 20px;
+  margin-right: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+.container {
+  height: auto;
+  width: 40%;
 }
 
 .avatar-uploader > .ant-upload {
@@ -279,6 +305,15 @@ onMounted(updateDatesFromQuery);
 .ant-upload-select-picture-card .ant-upload-text {
   margin-top: 8px;
   color: #666;
+}
+
+/* 일정 만들기 버튼 커스텀 스타일 */
+.custom-button {
+  width: 100%; /* 버튼의 너비 설정 */
+  height: 60px;
+  background-color: #f8f1f1; /* 버튼의 배경색 설정 */
+  color: #bd9def; /* 버튼의 텍스트 색상 설정 */
+  border-color: #bd9def; /* 버튼의 테두리 색상 설정 */
 }
 
 </style>

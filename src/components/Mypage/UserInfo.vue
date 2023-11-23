@@ -175,6 +175,7 @@ h3 {
 
 .profil {
   margin-right: 80px;
+  margin-top: 15px;
   border: 2px solid black; /* Add border */
 }
 
