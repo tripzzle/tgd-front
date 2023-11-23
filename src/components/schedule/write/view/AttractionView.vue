@@ -62,6 +62,10 @@ const onSearch = () => {
       });
 };
 
+const onUpdateOption = (option) => {
+  sidoCode.value = option;
+};
+
 </script>
 
 <style scoped>
