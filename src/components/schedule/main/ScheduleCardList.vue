@@ -1,6 +1,6 @@
 <template>
   <a-row :gutter="[0, 80]" align="center">
-    <Card class="result" v-for="(item, index) in items" :key="index" :item="item"/>
+    <Card class="result" v-for="(item) in items" :key="item.scheduleId" :item="item"/>
   </a-row>
   <InfiniteLoading @infinite="load" align="center"/>
 </template>
@@ -28,10 +28,12 @@ let size = ref(10);
 
 function insert(arr, ...items) {
   console.log("in inserts", items[0]);
+  arr = [];
   items[0].forEach(item => {
     console.log("in insert", item);
     arr.push(item);
   })
+  console.log("in inserts", items[0]);
 }
 
 const load = async $state => {
@@ -46,7 +48,8 @@ const load = async $state => {
         console.log("try data", data);
         console.log("pageInfo", pageInfo);
 
-        if(pageInfo.page < page || pageInfo.totalSize === 0){
+        console.log(pageInfo.page < page);
+        if(pageInfo.totalPage <= page || pageInfo.totalSize === 0){
           $state.complete()
         }
 
@@ -58,10 +61,6 @@ const load = async $state => {
           $state.loaded();
         }
         page++;
-
-        if (page <= pageInfo.page) {
-          console.log("page :::: ", page, pageInfo.page)
-        }
       } catch (error) {
         console.log(error)
         $state.error();
