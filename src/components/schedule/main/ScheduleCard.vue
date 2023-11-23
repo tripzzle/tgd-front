@@ -11,7 +11,7 @@
             <edit-outlined key="edit"/>
             <ellipsis-outlined key="ellipsis"/>
           </template>
-          <a-card-meta :title="item.title" :description="item.content">
+          <a-card-meta :title="item.title" :description="item?.user.nickname">
             <template #avatar>
               <a-avatar :src="item?.user.imgUrl"/>
               <!-- imgUrl이 없을 경우 기본 이미지 URL 사용 -->
@@ -20,10 +20,10 @@
         </a-card>
       </div>
       <div class="flip-card-back">
-        <h1>{{ item.title }}</h1>
-        <p>
-          {{ item.days[0].date }} ~ {{ item.days[item.days.length - 1].date }}
-        </p>
+          <h3>{{ item.content }}</h3>
+          <p>
+            {{ item.days[0].date }} ~ {{ item.days[item.days.length - 1].date }}
+          </p>
         <!-- 마지막 일정 날짜 출력 -->
         <!-- 일정 날짜 출력 -->
       </div>
