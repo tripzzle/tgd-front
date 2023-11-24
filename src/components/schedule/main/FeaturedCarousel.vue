@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <a-carousel autoplay>
-      <div><h3>1</h3></div>
-      <div><h3>2</h3></div>
-      <div><h3>3</h3></div>
-      <div><h3>4</h3></div>
+      <img src="@/assets/img/main1.jpg" alt="">
+      <img src="@/assets/img/main2.jpg" alt="">
+      <img src="@/assets/img/main3.jpg" alt="">
+      <img src="@/assets/img/main4.jpg" alt="">
     </a-carousel>
     <a-input-search class="search-bar" placeholder="검색어를 입력하세요" @search="onSearch"/>
   </div>

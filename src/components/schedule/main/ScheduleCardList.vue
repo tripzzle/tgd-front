@@ -28,7 +28,6 @@ let size = ref(10);
 
 function insert(arr, ...items) {
   console.log("in inserts", items[0]);
-  arr = [];
   items[0].forEach(item => {
     console.log("in insert", item);
     arr.push(item);

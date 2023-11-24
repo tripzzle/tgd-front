@@ -15,14 +15,22 @@ const server = import.meta.env.VITE_SERVER;
 moment.locale('ko');  // Change this line
 
 const openModal = () => {
-  console.log(store);
+  if (user.isLogin) {
+    console.log(store);
   store.open = true;
   console.log("openModal");
+  } else {
+    router.push({
+      name: "login"
+    })
+  }
+
 };
 
 const logout = () => {
   user.isLogin = false;
   user.token = null;
+  localStorage.removeItem("token")
   router.push({
     name: "main"
   })
